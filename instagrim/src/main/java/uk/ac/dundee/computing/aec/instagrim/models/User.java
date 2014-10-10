@@ -27,7 +27,7 @@ public class User {
         
     }
     
-    public boolean RegisterUser(String username, String Password){
+    public boolean RegisterUser(String username, String Password,String Name, String Surname,String Email,String Addresses){
         AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
@@ -37,14 +37,22 @@ public class User {
             return false;
         }
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password) Values(?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
-        session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        username,EncodedPassword));
-        //We are assuming this always works.  Also a transaction would be good here !
+        PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
+        BoundStatement boundStatement2 = new BoundStatement(ps2);
+
+        try{
+        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
+        	session.execute( boundStatement2.bind(Email,username));
+        }catch(Exception e)
+        {
+        	System.out.println("fail"+Email);	
+        }
         
+        //We are assuming this always works.  Also a transaction would be good here !
+        System.out.println("success"+Email+username);	
         return true;
     }
     
@@ -58,25 +66,26 @@ public class User {
             return false;
         }
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
+        PreparedStatement ps = session.prepare("select first_name from userprofiles where login =?");
+        
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        username));
+        rs = session.execute( boundStatement.bind( username));
         if (rs.isExhausted()) {
             System.out.println("No Images returned");
             return false;
         } else {
             for (Row row : rs) {
                
-                String StoredPass = row.getString("password");
+                String StoredPass = row.getString("first_name");
+                System.out.print("password!!!"+StoredPass);
                 if (StoredPass.compareTo(EncodedPassword) == 0)
-                    return true;
+                	System.out.print("provero4ka1");
+                return true;
             }
         }
    
-    
+        System.out.print("provero4ka2");
     return false;  
     }
        public void setCluster(Cluster cluster) {

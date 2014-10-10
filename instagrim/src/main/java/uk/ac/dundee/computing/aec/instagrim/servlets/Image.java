@@ -132,11 +132,11 @@ public class Image extends HttpServlet {
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();
             HttpSession session=request.getSession();
-            LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+            //LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
             String username="majed";
-            if (lg.getlogedin()){
+            /*if (lg.getlogedin()){
                 username=lg.getUsername();
-            }
+            }*/
             if (i > 0) {
                 byte[] b = new byte[i + 1];
                 is.read(b);
@@ -147,7 +147,7 @@ public class Image extends HttpServlet {
 
                 is.close();
             }
-            RequestDispatcher rd = request.getRequestDispatcher("/upload.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/uploadPic.jsp");
              rd.forward(request, response);
         }
 

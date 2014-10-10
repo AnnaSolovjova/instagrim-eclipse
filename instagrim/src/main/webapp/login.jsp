@@ -22,25 +22,29 @@
             <ul>
                 
                 <li><a href="/Instagrim/Images/majed">Sample Images</a></li>
+                <li ><a href="/Instagrim">Home</a></li>
             </ul>
         </nav>
        
         <article>
             <h3>Login</h3>
             <form method="POST"  action="Login">
+              <div id="Rform">
+                <div id="tags">
                 <ul>
-                    <li>User Name <input type="text" name="username"></li>
-                    <li>Password <input type="password" name="password"></li>
+                    <li>User Name </li>
+                    <li>Password </li>
                 </ul>
-                <br/>
-                <input type="submit" value="Login"> 
+                </div>
+                  <div id="inpurW"><input type="text" name="username" class="menu">  <br/>
+                <input type="password" name="password" class="menu">  <br/>
+                </div>
+              </div>
+               <div id="button">  <input type="submit" value="Login" id="button"> </div>>
+              
             </form>
 
         </article>
-        <footer>
-            <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
-            </ul>
-        </footer>
+     
     </body>
 </html>

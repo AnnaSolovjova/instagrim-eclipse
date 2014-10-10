@@ -23,7 +23,7 @@
             <ul>
 
                
-                <li><a href="upload.jsp">Upload</a></li>
+               
                     <%
                         
                         LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
@@ -38,6 +38,7 @@
                                 %>
                  <li><a href="register.jsp">Register</a></li>
                 <li><a href="login.jsp">Login</a></li>
+                 <li><a href="uploadPic.jsp">Upload</a></li>
                 <%
                                         
                             

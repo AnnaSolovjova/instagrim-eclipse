@@ -10,7 +10,40 @@ and open the template in the editor.
 
 
 nav {
-    text-align: left;
+
     border: 2px;
-    float: right;
+  
+}
+##Rform
+{	
+ position: relative;
+ top: 20px;	
+ overflow: hidden;
+ 
+}
+#tags
+{
+
+    float: left;
+	width:150px;
+	 
+}
+#inputW
+{
+    float: left;
+	
+}
+.menu
+{
+margin-top:5px;
+}
+ul
+{
+margin-top:3px;
+line-height: 163%;
+}
+.button
+{
+margin-top:10 px;
+position:relative;
 }
