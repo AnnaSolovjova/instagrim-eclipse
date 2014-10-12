@@ -40,12 +40,13 @@ public class User {
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
-        PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
-        BoundStatement boundStatement2 = new BoundStatement(ps2);
+       // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
+      //  BoundStatement boundStatement2 = new BoundStatement(ps2);
 
         try{
+        	System.out.println("login"+username+Password+Name+Surname);
         	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
-        	session.execute( boundStatement2.bind(Email,username));
+        	//session.execute( boundStatement2.bind(Email,username));
         }catch(Exception e)
         {
         	System.out.println("fail"+Email);	
@@ -66,7 +67,7 @@ public class User {
             return false;
         }
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("select first_name from userprofiles where login =?");
+        PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
         
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
@@ -75,9 +76,9 @@ public class User {
             System.out.println("No Images returned");
             return false;
         } else {
-            for (Row row : rs) {
-               
-                String StoredPass = row.getString("first_name");
+        	for (Row row : rs) {
+                
+                String StoredPass = row.getString("password");
                 System.out.print("password!!!"+StoredPass);
                 if (StoredPass.compareTo(EncodedPassword) == 0)
                 	System.out.print("provero4ka1");
@@ -88,9 +89,25 @@ public class User {
         System.out.print("provero4ka2");
     return false;  
     }
-       public void setCluster(Cluster cluster) {
+    
+    
+    public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
+       
+     public String getName(String username) {
+    	   Session session = cluster.connect("instagrim");
+    	   PreparedStatement ps = session.prepare("select fisrt_name from userprofiles where login =?");
+           
+           ResultSet rs = null;
+           BoundStatement boundStatement = new BoundStatement(ps);
+           rs = session.execute( boundStatement.bind(username));
+           String name="";
+           for (Row row : rs) {
+                name = row.getString("first_name");
+               }
+           return name;
+       }
 
     
 }

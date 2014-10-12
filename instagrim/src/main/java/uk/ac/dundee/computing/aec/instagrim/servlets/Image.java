@@ -72,6 +72,7 @@ public class Image extends HttpServlet {
         int command;
         try {
             command = (Integer) CommandsMap.get(args[1]);
+            System.out.print(command+ "COMANDA");
         } catch (Exception et) {
             error("Bad Operator", response);
             return;
@@ -92,7 +93,7 @@ public class Image extends HttpServlet {
     }
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PicModel tm = new PicModel();
+    	PicModel tm = new PicModel();
         tm.setCluster(cluster);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
@@ -132,11 +133,11 @@ public class Image extends HttpServlet {
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();
             HttpSession session=request.getSession();
-            //LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+            LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
             String username="majed";
-            /*if (lg.getlogedin()){
+            if (lg.getlogedin()){
                 username=lg.getUsername();
-            }*/
+            }
             if (i > 0) {
                 byte[] b = new byte[i + 1];
                 is.read(b);
