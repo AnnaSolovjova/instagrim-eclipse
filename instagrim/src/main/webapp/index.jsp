@@ -33,7 +33,7 @@
                     %>
 
                 <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
-                <li><a href="/Instagrim/UserProfile.jsp">Your Profile</a></li>
+                <li><a href="/Instagrim/Profile">Your Profile</a></li>
                     <%}
                             }else{
                                 %>

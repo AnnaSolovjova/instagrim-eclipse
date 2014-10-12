@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.datastax.driver.core.Cluster;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
@@ -20,7 +21,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 /**
  * Servlet implementation class Profile
  */
-@WebServlet(name = "Profile", urlPatterns = { "/Profile" })
+@WebServlet(name = "/Profile", urlPatterns = { "/Profile" })
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 private Cluster cluster;
@@ -45,7 +46,15 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		System.out.print("check");
+		String args[] = Convertors.SplitRequestPath(request);
+		 try {
+	            
+			 DisplayProfile(args[2], request, response);
+	        } catch (Exception et) {
+	            //error("Bad Operator", response);
+	            return;
+	        }
 	}
 
 	/**
