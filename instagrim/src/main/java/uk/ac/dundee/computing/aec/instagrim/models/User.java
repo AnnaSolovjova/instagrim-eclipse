@@ -23,6 +23,8 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
  */
 public class User {
     Cluster cluster;
+    String name="";
+    String surname="";
     public User(){
         
     }
@@ -44,7 +46,7 @@ public class User {
       //  BoundStatement boundStatement2 = new BoundStatement(ps2);
 
         try{
-        	System.out.println("login"+username+Password+Name+Surname);
+        	
         	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
         	//session.execute( boundStatement2.bind(Email,username));
         }catch(Exception e)
@@ -53,8 +55,7 @@ public class User {
         }
         
         //We are assuming this always works.  Also a transaction would be good here !
-        System.out.println("success"+Email+username);	
-        return true;
+                return true;
     }
     
     public boolean IsValidUser(String username, String Password){
@@ -79,14 +80,14 @@ public class User {
         	for (Row row : rs) {
                 
                 String StoredPass = row.getString("password");
-                System.out.print("password!!!"+StoredPass);
+              
                 if (StoredPass.compareTo(EncodedPassword) == 0)
-                	System.out.print("provero4ka1");
+                	
                 return true;
             }
         }
    
-        System.out.print("provero4ka2");
+     
     return false;  
     }
     
@@ -95,19 +96,34 @@ public class User {
         this.cluster = cluster;
     }
        
-     public String getName(String username) {
+     public void getInfo(String username) {
+    
     	   Session session = cluster.connect("instagrim");
-    	   PreparedStatement ps = session.prepare("select fisrt_name from userprofiles where login =?");
-           
+    	   
+    	   PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
+    	   
            ResultSet rs = null;
            BoundStatement boundStatement = new BoundStatement(ps);
            rs = session.execute( boundStatement.bind(username));
-           String name="";
+          
+           
+         
            for (Row row : rs) {
+        	  System.out.println("row"+row);
                 name = row.getString("first_name");
+                surname = row.getString("last_name");
+                
+               
                }
-           return name;
+           
+           
        }
 
-    
+     public String getName(){
+     return name;
+     }
+     public String getSurname(){
+     return surname;
+     }
+     
 }

@@ -5,10 +5,12 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
@@ -16,15 +18,20 @@ import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import uk.ac.dundee.computing.aec.instagrim.stores.States;
 
 /**
  * Servlet implementation class Profile
  */
-@WebServlet(name = "/Profile", urlPatterns = { "/Profile" })
+@WebServlet(name = "/Profile", urlPatterns = { "/Profile",
+    "/Profile/*","Profile/Change/*" })
+@MultipartConfig
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 private Cluster cluster;
+	 private boolean change=false;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -46,14 +53,17 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("check");
+		System.out.print("dohodit23?");
 		String args[] = Convertors.SplitRequestPath(request);
+		
 		 try {
-	            
+			
 			 DisplayProfile(args[2], request, response);
+			
 	        } catch (Exception et) {
+	        	System.out.print("checkerror");
 	            //error("Bad Operator", response);
-	            return;
+	           
 	        }
 	}
 
@@ -61,22 +71,40 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		System.out.print("dohodit?");
+		
+		response.sendRedirect("/Instagrim/UserProfile.jsp");
+		 
 	}
 	
 	protected void DisplayProfile(String User, HttpServletRequest request, HttpServletResponse response)
 	{
+	
 		User tm = new User();
         tm.setCluster(cluster);
-        String name = tm.getName(User);
+	        tm.getInfo(User);
+        String name=tm.getName();
+        String surname=tm.getSurname();
         RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
-        request.setAttribute("firstname", name);
+          request.setAttribute("firstname", name);
+        request.setAttribute("lastname", surname);
         try {
+        	
 			rd.forward(request, response);
 		} catch (ServletException | IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private void ChangeProfile()
+	{
+		
+	}
+	public boolean getChange()
+	{
+		
+		return change;
 	}
 
 }

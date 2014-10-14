@@ -72,7 +72,7 @@ public class Image extends HttpServlet {
         int command;
         try {
             command = (Integer) CommandsMap.get(args[1]);
-            System.out.print(command+ "COMANDA");
+          
         } catch (Exception et) {
             error("Bad Operator", response);
             return;
@@ -83,9 +83,11 @@ public class Image extends HttpServlet {
                 break;
             case 2:
                 DisplayImageList(args[2], request, response);
+                System.out.println(args[2]+"vot3");
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
+                System.out.println(args[1]+args[2]+"vot4");
                 break;
             default:
                 error("Bad Operator", response);
@@ -94,6 +96,7 @@ public class Image extends HttpServlet {
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	PicModel tm = new PicModel();
+    	System.out.println(User+"user!");
         tm.setCluster(cluster);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
