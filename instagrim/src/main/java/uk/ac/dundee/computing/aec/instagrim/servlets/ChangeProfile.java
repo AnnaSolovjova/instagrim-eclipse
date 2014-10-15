@@ -73,11 +73,11 @@ public class ChangeProfile extends HttpServlet {
        		User us = new User();
        		us.setCluster(cluster);
        		us.updateProfile(name,surname,login);
-       	 RequestDispatcher rd=request.getRequestDispatcher("/Profile/"+login);
-         request.setAttribute("firstname", name);
-         request.setAttribute("lastname", surname);
+       	 //RequestDispatcher rd=request.getRequestDispatcher("/Profile/"+login);
+         //request.setAttribute("firstname", name);
+         //request.setAttribute("lastname", surname);
        
-         System.out.println(name+surname+login);
+         System.out.println(name+surname+login+"davaj uze");
          try {
          	rd.forward(request, response);
     		} catch (ServletException | IOException e) {

@@ -43,7 +43,7 @@ String name = (String) request.getAttribute("firstname"); System.out.println(nam
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>
         	<p>Avarat</p> <input type="file" name="avatar" class="menu" >
         	
-        	<input id="change2" type="submit" value="S"><br/>
+        	<input id="change2" type="submit" value="Save"><br/>
          	</form>
 
           <% } %>

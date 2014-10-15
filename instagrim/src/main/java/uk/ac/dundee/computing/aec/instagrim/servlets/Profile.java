@@ -71,9 +71,19 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("dohodit?");
+		System.out.print("dohodit???");
+		String name=request.getParameter("name");
+        String surname=request.getParameter("surname");
+	      // RequestDispatcher rd2 = request.getRequestDispatcher("/UserProfile.jsp");
+	      request.setAttribute("firstname", name);
+	        request.setAttribute("lastname", surname);
+	       // try {
+			//	rd2.forward(request, response);
+			//} catch (ServletException | IOException e) {
+			//	e.printStackTrace();
+			//}
 		
-		response.sendRedirect("/Instagrim/UserProfile.jsp");
+		
 		 
 	}
 	
@@ -97,14 +107,6 @@ public class Profile extends HttpServlet {
 		
 	}
 	
-	private void ChangeProfile()
-	{
-		
-	}
-	public boolean getChange()
-	{
-		
-		return change;
-	}
+	
 
 }
