@@ -126,4 +126,31 @@ public class User {
      return surname;
      }
      
-}
+     
+     public void updateProfile(String Name, String Surname,String UserName) {
+      	  Session session = cluster.connect("instagrim");
+      	  PreparedStatement ps;
+            
+      	 if(Name!=null)
+       	{
+      		  ps = session.prepare("update userprofiles  SET first_name=? WHERE login =?");
+      		  ResultSet rs = null;
+            	BoundStatement boundStatement = new BoundStatement(ps);
+            	rs = session.execute( boundStatement.bind(Name, UserName));
+       	}
+       	if(Surname!=null)
+       	{
+       	 ps = session.prepare("update userprofiles  SET last_name=? WHERE login =?");
+      		  ResultSet rs = null;
+            	BoundStatement boundStatement = new BoundStatement(ps);
+            	rs = session.execute( boundStatement.bind(Surname,UserName));
+       	}
+       	}
+    	}
+      	 
+   	 
+   	 
+
+
+
+

@@ -23,7 +23,7 @@ import uk.ac.dundee.computing.aec.instagrim.models.User;
  *
  * @author Administrator
  */
-@WebServlet(name = "Register", urlPatterns = {"/Register"})
+@WebServlet(name = "/Register", urlPatterns = {"/Register"})
 public class Register extends HttpServlet {
     Cluster cluster=null;
     public void init(ServletConfig config) throws ServletException {

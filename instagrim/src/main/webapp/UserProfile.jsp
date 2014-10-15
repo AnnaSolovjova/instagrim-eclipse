@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 <%@page import="uk.ac.dundee.computing.aec.instagrim.servlets.*" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -9,6 +10,7 @@
 <title>Profile</title>
 </head>
 <body>
+<script src="mouseclick.js"></script>
 <%
 String UserName="guest";
 boolean change=false;
@@ -23,10 +25,10 @@ String name = (String) request.getAttribute("firstname"); %>
             <ul>
                 <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
                 <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
-                <li class="nav"><a href="/Instagrim/Logout">Logout</a></li>
+                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
             </ul>
         </nav>
-        <form method="POST"  action="/Instagrim/Profile/Change/<%=lg.getUsername()%>">
+     
    <% 
          if(!change){
          
@@ -36,17 +38,16 @@ String name = (String) request.getAttribute("firstname"); %>
         <%
         	} else{
         %>
-         	
-       		<p>Name: <%=name%> <p>
-        	<p>Surname: <%=surname%><p><br/>
+         	<form action="/Instagrim/ChangeProfile" method="Get">
+         	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
+       		<p>Name: <%=name%> <p><input type="hidden" id="thisField1" name="name" value=<%=name%>>
+        	<p">Surname: <%=surname%><p><input type="hidden" id="thisField2" name="surname" value=<%=surname%>><br/>
         	<p>Avarat</p>
-        	<input id="change" type="submit" value="Change">
-         	</form>
-
+        	
           <% } %>
-            
+            <input type="submit" value="ChangeInfo"> 
           <%}else {System.out.println("rabotaet come on");}%>
            
-       
+       </form>
 </body>
 </html>

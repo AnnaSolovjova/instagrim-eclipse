@@ -26,7 +26,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.States;
  * Servlet implementation class Profile
  */
 @WebServlet(name = "/Profile", urlPatterns = { "/Profile",
-    "/Profile/*","Profile/Change/*" })
+    "/Profile/*" })
 @MultipartConfig
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -54,8 +54,8 @@ public class Profile extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.print("dohodit23?");
-		String args[] = Convertors.SplitRequestPath(request);
 		
+		String args[] = Convertors.SplitRequestPath(request);
 		 try {
 			
 			 DisplayProfile(args[2], request, response);
