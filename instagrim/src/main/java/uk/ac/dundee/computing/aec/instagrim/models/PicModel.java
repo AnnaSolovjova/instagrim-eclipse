@@ -19,10 +19,10 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.Bytes;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,8 +30,11 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+
 import javax.imageio.ImageIO;
+
 import static org.imgscalr.Scalr.*;
+
 import org.imgscalr.Scalr.Method;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.*;
@@ -49,8 +52,9 @@ public class PicModel {
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
-
-    public void insertPic(byte[] b, String type, String name, String user) {
+    
+    
+public void insertPic(byte[] b, String type, String name, String user) {
         try {
             Convertors convertor = new Convertors();
 
@@ -175,6 +179,7 @@ public class PicModel {
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                 ps = session.prepare("select processed,processedlength,type from pics where picid =?");
             }
+            	
             BoundStatement boundStatement = new BoundStatement(ps);
             rs = session.execute( // this is where the query is executed
                     boundStatement.bind( // here you are binding the 'boundStatement'
@@ -212,5 +217,13 @@ public class PicModel {
         return p;
 
     }
+    
+    //Methods for managing profileImage
+    public void insertAvatar(byte[] b, String user)
+    {
+       
+    }
+
+    
 
 }

@@ -51,5 +51,10 @@ public class Pic {
         byte image[] = Bytes.getArray(bImage);
         return image;
     }
+    public void  setBytes( byte[] pic) {
+        
+        byte image[] = pic;
+       
+    }
 
 }

@@ -131,7 +131,7 @@ public class Image extends HttpServlet {
             System.out.println("Part Name " + part.getName());
 
             String type = part.getContentType();
-            String filename = part.getSubmittedFileName();
+            String filename = part.getName();
             
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();

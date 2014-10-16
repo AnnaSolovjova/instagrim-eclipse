@@ -1,6 +1,7 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -32,7 +33,7 @@ public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 private Cluster cluster;
 	 private boolean change=false;
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -71,17 +72,29 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("dohodit???");
-		String name=request.getParameter("name");
-        String surname=request.getParameter("surname");
-	      // RequestDispatcher rd2 = request.getRequestDispatcher("/UserProfile.jsp");
-	      request.setAttribute("firstname", name);
-	        request.setAttribute("lastname", surname);
-	       // try {
-			//	rd2.forward(request, response);
-			//} catch (ServletException | IOException e) {
-			//	e.printStackTrace();
-			//}
+		 System.out.println("dowlo1234");
+       	 String name=request.getParameter("name");
+         String surname=request.getParameter("surname");
+         String login=request.getParameter("login");
+         byte[] b;
+         
+         InputStream is = request.getPart(part.getName()).getInputStream();
+       		User us = new User();
+       		PicModel pic = new PicModel();
+       		us.setCluster(cluster);
+       		us.updateProfile(name,surname,login);
+       	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
+         request.setAttribute("firstname", name);
+         request.setAttribute("lastname", surname);
+         
+         
+       
+         System.out.println(name+surname+login+"davaj uze");
+         try {
+         	rd.forward(request, response);
+    		} catch (ServletException | IOException e) {
+    			e.printStackTrace();
+    		}   		
 		
 		
 		 

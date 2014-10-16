@@ -19,6 +19,7 @@ if (lg != null) {
  UserName = lg.getUsername();}
 String name = (String) request.getAttribute("firstname"); %>   
 <% String surname = (String) request.getAttribute("lastname"); %>
+<% %>
 
 <p>Hello <%=UserName%><p>
   <nav>
@@ -42,9 +43,23 @@ String name = (String) request.getAttribute("firstname"); %>
          	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
        		<p>Name: <%=name%> <p><input type="hidden" id="thisField1" name="name" value=<%=name%>>
         	<p">Surname: <%=surname%><p><input type="hidden" id="thisField2" name="surname" value=<%=surname%>><br/>
-        	<p>Avarat</p>
+        	<p>Avarat</p><%java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
+            if (lsPics == null) {
+       		 %>
+       		 <p>No Pictures found!</p>
+      		  <%
+        } else {
+            Iterator<Pic> iterator;
+            iterator = lsPics.iterator();
+            while (iterator.hasNext()) {
+                Pic p = (Pic) iterator.next();
+
+        %>
+        <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+
+            }
         	
-          <% } %>
+          } }%>
             <input type="submit" value="ChangeInfo"> 
           <%}else {System.out.println("rabotaet come on");}%>
            

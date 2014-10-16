@@ -12,9 +12,19 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+
+import java.io.FileInputStream;
+import java.lang.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
+import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 
 /**
@@ -25,12 +35,16 @@ public class User {
     Cluster cluster;
     String name="";
     String surname="";
+    byte[] avatar=null;
     public User(){
         
     }
     
-    public boolean RegisterUser(String username, String Password,String Name, String Surname,String Email,String Addresses){
-        AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
+    public boolean RegisterUser(String username, String Password,String Name, String Surname,String Email,String Addresses) throws IOException{
+    	
+    	InputStream is = getClass().getResourceAsStream("image.jpg");
+    	byte[] b=null;
+    	AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
             EncodedPassword= sha1handler.SHA1(Password);
@@ -38,16 +52,22 @@ public class User {
             System.out.println("Can't check your password");
             return false;
         }
+        
+        int i = is.available();
+        if (i > 0) {
+            b = new byte[i + 1];
+            is.read(b);
+            System.out.println("Length : " + b.length);
+            is.close();
+        }
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,imageAvatar) Values(?,?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
        // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
       //  BoundStatement boundStatement2 = new BoundStatement(ps2);
-
         try{
-        	
-        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
+        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname,b));
         	//session.execute( boundStatement2.bind(Email,username));
         }catch(Exception e)
         {
@@ -125,9 +145,13 @@ public class User {
      public String getSurname(){
      return surname;
      }
+     public byte[] getAvatar(){
+         return avatar;
+         }
      
+    
      
-     public void updateProfile(String Name, String Surname,String UserName) {
+     public void updateProfile(String Name, String Surname,String UserName,byte[] avatarPic) {
       	  Session session = cluster.connect("instagrim");
       	  PreparedStatement ps;
             
@@ -145,6 +169,22 @@ public class User {
             	BoundStatement boundStatement = new BoundStatement(ps);
             	rs = session.execute( boundStatement.bind(Surname,UserName));
        	}
+       	
+       	if(avatarPic!=null)
+       	{
+       	 try {
+            
+            ByteBuffer buffer = ByteBuffer.wrap(avatarPic);
+            //The following is a quick and dirty way of doing this, will fill the disk quickly !
+            PreparedStatement psInsertPic = session.prepare("update userprofiles Set imageAvatar=? where login = ?");
+            BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+            session.execute(bsInsertPic.bind(buffer,UserName));
+            session.close();
+        	} catch (Exception ex) {
+            System.out.println("Error --> " + ex);}
+        
+       	}
+       	
        	}
     	}
       	 
