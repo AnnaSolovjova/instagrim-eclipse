@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 
@@ -70,12 +71,13 @@ public class ChangeProfile extends HttpServlet {
        	 String name=request.getParameter("name");
          String surname=request.getParameter("surname");
          String login=request.getParameter("login");
+        
        		User us = new User();
        		us.setCluster(cluster);
-       	//	us.updateProfile(name,surname,login);
-       	 //RequestDispatcher rd=request.getRequestDispatcher("/Profile/"+login);
-         //request.setAttribute("firstname", name);
-         //request.setAttribute("lastname", surname);
+       		us.updateProfile(name,surname,login);
+       	 RequestDispatcher rd=request.getRequestDispatcher("/Profile/"+login);
+         request.setAttribute("firstname", name);
+         request.setAttribute("lastname", surname);
        
          System.out.println(name+surname+login+"davaj uze");
          try {

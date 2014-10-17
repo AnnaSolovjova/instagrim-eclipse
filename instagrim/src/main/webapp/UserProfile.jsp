@@ -19,7 +19,8 @@ if (lg != null) {
  UserName = lg.getUsername();}
 String name = (String) request.getAttribute("firstname"); %>   
 <% String surname = (String) request.getAttribute("lastname"); %>
-<% %>
+<% Pic lsPics = (Pic) request.getAttribute("avatar");
+System.out.println("mumu"+lsPics.getSUUID());%>
 
 <p>Hello <%=UserName%><p>
   <nav>
@@ -31,7 +32,7 @@ String name = (String) request.getAttribute("firstname"); %>
         </nav>
      
    <% 
-         if(!change){
+         
          
             if (name == null) {
         %>
@@ -43,25 +44,15 @@ String name = (String) request.getAttribute("firstname"); %>
          	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
        		<p>Name: <%=name%> <p><input type="hidden" id="thisField1" name="name" value=<%=name%>>
         	<p">Surname: <%=surname%><p><input type="hidden" id="thisField2" name="surname" value=<%=surname%>><br/>
-        	<p>Avarat</p><%java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
-            if (lsPics == null) {
-       		 %>
+        	<p>Avarat</p><%
+            	if (lsPics == null) {%>
        		 <p>No Pictures found!</p>
-      		  <%
-        } else {
-            Iterator<Pic> iterator;
-            iterator = lsPics.iterator();
-            while (iterator.hasNext()) {
-                Pic p = (Pic) iterator.next();
-
-        %>
-        <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
-
-            }
-        	
-          } }%>
+      		  <%}else {
+        		System.out.println(lsPics.getSUUID());%>
+        	<img src="/Instagrim/Avatar/<%=lsPics.getSUUID()%>"></a><br/><%
+      		  }} %>
             <input type="submit" value="ChangeInfo"> 
-          <%}else {System.out.println("rabotaet come on");}%>
+          
            
        </form>
 </body>

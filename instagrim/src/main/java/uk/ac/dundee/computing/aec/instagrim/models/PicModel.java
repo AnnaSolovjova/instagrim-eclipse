@@ -56,18 +56,20 @@ public class PicModel {
     
 public void insertPic(byte[] b, String type, String name, String user) {
         try {
-            Convertors convertor = new Convertors();
-
-            String types[]=Convertors.SplitFiletype(type);
+        	Convertors convertor = new Convertors();
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
+            System.out.println("length of the pic" + b.length);
             java.util.UUID picid = convertor.getTimeUUID();
+            System.out.println(picid+"lalalal");
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
             Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
-
             output.write(b);
+            
+           if(type!="avatar"){
+            String types[]=Convertors.SplitFiletype(type);
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
@@ -75,16 +77,25 @@ public void insertPic(byte[] b, String type, String name, String user) {
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instagrim");
-
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
-
+           
             Date DateAdded = new Date();
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
             session.close();
+           }else{
+        	   Session session = cluster.connect("instagrim");
+        	  
+
+        	   PreparedStatement psInsertAvatar = session.prepare("UPDATE userprofiles SET picId = ?, image =? WHERE login = ?");
+        	   BoundStatement bsInsertAvatar = new BoundStatement(psInsertAvatar);
+        	   session.execute(bsInsertAvatar.bind(picid,buffer,user));
+        	   
+               session.close();
+           }
 
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);
@@ -136,6 +147,30 @@ public void insertPic(byte[] b, String type, String name, String user) {
         return pad(img, 4);
     }
    
+   public Pic getAvatar(String User)
+   {
+	   Pic pic=new Pic();
+	   Session session = cluster.connect("instagrim");
+       PreparedStatement ps = session.prepare("select picid from userprofiles where login =?");
+       ResultSet rs = null;
+       BoundStatement boundStatement = new BoundStatement(ps);
+       rs = session.execute( boundStatement.bind(User));
+       for (Row row : rs) {
+           java.util.UUID UUID = row.getUUID("picid");
+           System.out.println("UUID" + UUID.toString());
+           pic.setUUID(UUID);
+       }
+       return pic;
+   }
+   public Pic getAvatarShow(java.util.UUID picid)
+   {
+	   Pic pic=new Pic();
+           System.out.println("UUID" + picid.toString());
+           //p.setPic(bImage, length, type);
+       
+       return pic;
+   }
+   
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
@@ -179,11 +214,12 @@ public void insertPic(byte[] b, String type, String name, String user) {
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                 ps = session.prepare("select processed,processedlength,type from pics where picid =?");
             }
+        	 else if (image_type == 4) {
+            ps = session.prepare("select image from pics where picid =?");
+        	}
             	
             BoundStatement boundStatement = new BoundStatement(ps);
-            rs = session.execute( // this is where the query is executed
-                    boundStatement.bind( // here you are binding the 'boundStatement'
-                            picid));
+            rs = session.execute(  boundStatement.bind(  picid));
 
             if (rs.isExhausted()) {
                 System.out.println("No Images returned");
@@ -193,16 +229,25 @@ public void insertPic(byte[] b, String type, String name, String user) {
                     if (image_type == Convertors.DISPLAY_IMAGE) {
                         bImage = row.getBytes("image");
                         length = row.getInt("imagelength");
+                        type = row.getString("type");
                     } else if (image_type == Convertors.DISPLAY_THUMB) {
                         bImage = row.getBytes("thumb");
                         length = row.getInt("thumblength");
+                        type = row.getString("type");
                 
                     } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                         bImage = row.getBytes("processed");
                         length = row.getInt("processedlength");
+                        type = row.getString("type");
+                    }
+                    else if (image_type == 4) {
+                        bImage = row.getBytes("image");
+                        type="image/jpeg";
+                        length=972;
+                        
                     }
                     
-                    type = row.getString("type");
+                    
 
                 }
             }
@@ -219,10 +264,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
     }
     
     //Methods for managing profileImage
-    public void insertAvatar(byte[] b, String user)
-    {
-       
-    }
+    
 
     
 

@@ -1,7 +1,10 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -27,7 +30,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.States;
  * Servlet implementation class Profile
  */
 @WebServlet(name = "/Profile", urlPatterns = { "/Profile",
-    "/Profile/*" })
+    "/Profile/*", "/Profile/Avatar","/Profile/Avatar/*"})
 @MultipartConfig
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -54,13 +57,14 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("dohodit23?");
+	
 		
 		String args[] = Convertors.SplitRequestPath(request);
+		System.out.print(args[2]);
 		 try {
-			
 			 DisplayProfile(args[2], request, response);
 			
+			// DisplayAvatar(args[3],  response);
 	        } catch (Exception et) {
 	        	System.out.print("checkerror");
 	            //error("Bad Operator", response);
@@ -76,9 +80,6 @@ public class Profile extends HttpServlet {
        	 String name=request.getParameter("name");
          String surname=request.getParameter("surname");
          String login=request.getParameter("login");
-         byte[] b;
-         
-         InputStream is = request.getPart(part.getName()).getInputStream();
        		User us = new User();
        		PicModel pic = new PicModel();
        		us.setCluster(cluster);
@@ -102,23 +103,46 @@ public class Profile extends HttpServlet {
 	
 	protected void DisplayProfile(String User, HttpServletRequest request, HttpServletResponse response)
 	{
-	
+		System.out.println("hujnja");
+		PicModel pm = new PicModel();
+        pm.setCluster(cluster);
 		User tm = new User();
         tm.setCluster(cluster);
-	        tm.getInfo(User);
+	    tm.getInfo(User);
+	    Pic lsPics = pm.getAvatar(User);    
         String name=tm.getName();
         String surname=tm.getSurname();
-        RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
-          request.setAttribute("firstname", name);
+       RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
+        request.setAttribute("firstname", name);
         request.setAttribute("lastname", surname);
-        try {
-        	
-			rd.forward(request, response);
-		} catch (ServletException | IOException e) {
-			e.printStackTrace();
-		}
+        System.out.println(lsPics+"provero4ka"+lsPics.getSUUID());
+     //   request.setAttribute("avatar", lsPics);
+        	try {
+        		rd.forward(request, response);
+        	}
+        		catch (ServletException | IOException e) {
+        		e.printStackTrace();
+        	}
 		
 	}
+	  private void DisplayAvatar(String Image, HttpServletResponse response) throws ServletException, IOException {
+	        PicModel tm = new PicModel();
+	        tm.setCluster(cluster);
+	        Pic p = tm.getPic(4, java.util.UUID.fromString(Image));
+	  
+	        OutputStream out = response.getOutputStream();
+	        response.setContentType(p.getType());
+	        response.setContentLength(p.getLength());
+	        System.out.println("information"+p.getType()+p.getLength());
+	        //out.write(Image);
+	        InputStream is = new ByteArrayInputStream(p.getBytes());
+	        BufferedInputStream input = new BufferedInputStream(is);
+	        byte[] buffer = new byte[8192];
+	        for (int length = 0; (length = input.read(buffer)) > 0;) {
+	            out.write(buffer, 0, length);
+	        }
+	        out.close();
+	    }
 	
 	
 

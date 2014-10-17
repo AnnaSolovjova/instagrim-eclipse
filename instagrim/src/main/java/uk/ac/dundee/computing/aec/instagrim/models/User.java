@@ -12,16 +12,23 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.utils.Bytes;
 
 import java.io.FileInputStream;
 import java.lang.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
@@ -42,8 +49,8 @@ public class User {
     
     public boolean RegisterUser(String username, String Password,String Name, String Surname,String Email,String Addresses) throws IOException{
     	
-    	InputStream is = getClass().getResourceAsStream("image.jpg");
-    	byte[] b=null;
+    	
+    	
     	AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
@@ -53,25 +60,21 @@ public class User {
             return false;
         }
         
-        int i = is.available();
-        if (i > 0) {
-            b = new byte[i + 1];
-            is.read(b);
-            System.out.println("Length : " + b.length);
-            is.close();
-        }
+       
+        
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,imageAvatar) Values(?,?,?,?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
        // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
       //  BoundStatement boundStatement2 = new BoundStatement(ps2);
         try{
-        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname,b));
+        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
         	//session.execute( boundStatement2.bind(Email,username));
         }catch(Exception e)
         {
         	System.out.println("fail"+Email);	
+        	return false;
         }
         
         //We are assuming this always works.  Also a transaction would be good here !
@@ -126,14 +129,13 @@ public class User {
            BoundStatement boundStatement = new BoundStatement(ps);
            rs = session.execute( boundStatement.bind(username));
           
-           
-         
            for (Row row : rs) {
         	  System.out.println("row"+row);
+        	
                 name = row.getString("first_name");
                 surname = row.getString("last_name");
+                System.out.println("matrjowka");
                 
-               
                }
            
            
@@ -151,9 +153,9 @@ public class User {
      
     
      
-     public void updateProfile(String Name, String Surname,String UserName,byte[] avatarPic) {
-      	  Session session = cluster.connect("instagrim");
-      	  PreparedStatement ps;
+     public void updateProfile(String Name, String Surname,String UserName) {
+    	 Session session = cluster.connect("instagrim");
+     	  PreparedStatement ps;
             
       	 if(Name!=null)
        	{
@@ -170,27 +172,55 @@ public class User {
             	rs = session.execute( boundStatement.bind(Surname,UserName));
        	}
        	
-       	if(avatarPic!=null)
-       	{
-       	 try {
-            
-            ByteBuffer buffer = ByteBuffer.wrap(avatarPic);
-            //The following is a quick and dirty way of doing this, will fill the disk quickly !
-            PreparedStatement psInsertPic = session.prepare("update userprofiles Set imageAvatar=? where login = ?");
-            BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
-            session.execute(bsInsertPic.bind(buffer,UserName));
-            session.close();
-        	} catch (Exception ex) {
-            System.out.println("Error --> " + ex);}
-        
-       	}
+       
        	
        	}
-    	}
+     
+     public void UpdateProfile(String UserName,byte[] avatarPic)
+     {
+    	 Session session = cluster.connect("instagrim");
+     	 PreparedStatement ps;
+ 
+    		if(avatarPic!=null)
+           	{
+           	 try {
+                System.out.println("length of the pic" + avatarPic.length);
+                ByteBuffer buffer = ByteBuffer.wrap(avatarPic);
+                //The following is a quick and dirty way of doing this, will fill the disk quickly !
+                PreparedStatement psInsertPic = session.prepare("update userprofiles Set imageAvatar=? where login = ?");
+                BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+                session.execute(bsInsertPic.bind(buffer,UserName));
+                session.close();
+            	} catch (Exception ex) {
+                System.out.println("Error --> " + ex);}
+            
+           	}
+     }
+    	
       	 
    	 
    	 
 
 
 
+private void DisplayAvatar(String Image, HttpServletResponse response) throws ServletException, IOException {
+    PicModel tm = new PicModel();
+    tm.setCluster(cluster);
+    Pic p = tm.getPic(4, java.util.UUID.fromString(Image));
 
+    OutputStream out = response.getOutputStream();
+    response.setContentType(p.getType());
+    response.setContentLength(p.getLength());
+    System.out.println("information"+p.getType()+p.getLength());
+    //out.write(Image);
+    InputStream is = new ByteArrayInputStream(p.getBytes());
+    BufferedInputStream input = new BufferedInputStream(is);
+    byte[] buffer = new byte[8192];
+    for (int length = 0; (length = input.read(buffer)) > 0;) {
+        out.write(buffer, 0, length);
+    }
+    out.close();
+}
+
+
+}

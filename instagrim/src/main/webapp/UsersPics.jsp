@@ -44,7 +44,7 @@
                 System.out.println(p.getSUUID());
 
         %>
-        <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+      <img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
 
             }
             }

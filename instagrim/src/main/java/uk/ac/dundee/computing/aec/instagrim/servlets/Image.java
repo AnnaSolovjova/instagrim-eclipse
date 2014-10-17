@@ -33,7 +33,10 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/Image/*",
     "/Thumb/*",
     "/Images",
-    "/Images/*"
+    "/Images/*"//,
+ //   "/Avatar",
+  //  "/Avatar/*"
+
 })
 @MultipartConfig
 
@@ -54,6 +57,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("Image", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
+       // CommandsMap.put("Avatar", 4);
 
     }
 
@@ -70,6 +74,7 @@ public class Image extends HttpServlet {
         // TODO Auto-generated method stub
         String args[] = Convertors.SplitRequestPath(request);
         int command;
+        
         try {
             command = (Integer) CommandsMap.get(args[1]);
           
@@ -77,17 +82,22 @@ public class Image extends HttpServlet {
             error("Bad Operator", response);
             return;
         }
+        System.out.println(command+"COMMANDOO"+args[0]+args[1]+args[2]);
         switch (command) {
             case 1:
                 DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
             case 2:
                 DisplayImageList(args[2], request, response);
-                System.out.println(args[2]+"vot3");
+                
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 System.out.println(args[1]+args[2]+"vot4");
+                break;
+            case 4:
+                DisplayAvatar(args[2],  response);
+                
                 break;
             default:
                 error("Bad Operator", response);
@@ -106,16 +116,33 @@ public class Image extends HttpServlet {
     }
 
     private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
-        PicModel tm = new PicModel();
+    	PicModel tm = new PicModel();
         tm.setCluster(cluster);
-  
-        
+
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
         
         OutputStream out = response.getOutputStream();
-
+        System.out.println("information"+p.getType()+p.getLength());
         response.setContentType(p.getType());
         response.setContentLength(p.getLength());
+       // out.write(Image);
+        InputStream is = new ByteArrayInputStream(p.getBytes());
+        BufferedInputStream input = new BufferedInputStream(is);
+        byte[] buffer = new byte[8192];
+        for (int length = 0; (length = input.read(buffer)) > 0;) {
+            out.write(buffer, 0, length);
+        }
+        out.close();
+    }
+    private void DisplayAvatar(String Image, HttpServletResponse response) throws ServletException, IOException {
+        PicModel tm = new PicModel();
+        tm.setCluster(cluster);
+        Pic p = tm.getPic(4, java.util.UUID.fromString(Image));
+  
+        OutputStream out = response.getOutputStream();
+        response.setContentType(p.getType());
+        response.setContentLength(p.getLength());
+        System.out.println("information"+p.getType()+p.getLength());
         //out.write(Image);
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
@@ -126,13 +153,14 @@ public class Image extends HttpServlet {
         out.close();
     }
 
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         for (Part part : request.getParts()) {
             System.out.println("Part Name " + part.getName());
 
             String type = part.getContentType();
             String filename = part.getName();
-            
+            System.out.println("type"+type+"filename"+filename);
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();
             HttpSession session=request.getSession();
