@@ -1,4 +1,5 @@
 package uk.ac.dundee.computing.aec.instagrim.models;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 /*
  * Expects a cassandra columnfamily defined as
@@ -18,6 +19,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.utils.Bytes;
 
 import java.awt.image.BufferedImage;
@@ -59,7 +61,6 @@ public void insertPic(byte[] b, String type, String name, String user) {
         	Convertors convertor = new Convertors();
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
-            System.out.println("length of the pic" + b.length);
             java.util.UUID picid = convertor.getTimeUUID();
             System.out.println(picid+"lalalal");
             
@@ -87,9 +88,8 @@ public void insertPic(byte[] b, String type, String name, String user) {
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
             session.close();
            }else{
+        	  System.out.println("AvatarInsert");
         	   Session session = cluster.connect("instagrim");
-        	  
-
         	   PreparedStatement psInsertAvatar = session.prepare("UPDATE userprofiles SET picId = ?, image =? WHERE login = ?");
         	   BoundStatement bsInsertAvatar = new BoundStatement(psInsertAvatar);
         	   session.execute(bsInsertAvatar.bind(picid,buffer,user));
@@ -147,39 +147,15 @@ public void insertPic(byte[] b, String type, String name, String user) {
         return pad(img, 4);
     }
    
-   public Pic getAvatar(String User)
-   {
-	   Pic pic=new Pic();
-	   Session session = cluster.connect("instagrim");
-       PreparedStatement ps = session.prepare("select picid from userprofiles where login =?");
-       ResultSet rs = null;
-       BoundStatement boundStatement = new BoundStatement(ps);
-       rs = session.execute( boundStatement.bind(User));
-       for (Row row : rs) {
-           java.util.UUID UUID = row.getUUID("picid");
-           System.out.println("UUID" + UUID.toString());
-           pic.setUUID(UUID);
-       }
-       return pic;
-   }
-   public Pic getAvatarShow(java.util.UUID picid)
-   {
-	   Pic pic=new Pic();
-           System.out.println("UUID" + picid.toString());
-           //p.setPic(bImage, length, type);
-       
-       return pic;
-   }
-   
+  
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("select picid from userpiclist where user =?");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        User));
+        rs = session.execute(
+                boundStatement.bind( User));
         if (rs.isExhausted()) {
             System.out.println("No Images returned");
             return null;
@@ -214,12 +190,11 @@ public void insertPic(byte[] b, String type, String name, String user) {
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                 ps = session.prepare("select processed,processedlength,type from pics where picid =?");
             }
-        	 else if (image_type == 4) {
-            ps = session.prepare("select image from pics where picid =?");
-        	}
             	
             BoundStatement boundStatement = new BoundStatement(ps);
-            rs = session.execute(  boundStatement.bind(  picid));
+            rs = session.execute( // this is where the query is executed
+                    boundStatement.bind( // here you are binding the 'boundStatement'
+                            picid));
 
             if (rs.isExhausted()) {
                 System.out.println("No Images returned");
@@ -229,25 +204,16 @@ public void insertPic(byte[] b, String type, String name, String user) {
                     if (image_type == Convertors.DISPLAY_IMAGE) {
                         bImage = row.getBytes("image");
                         length = row.getInt("imagelength");
-                        type = row.getString("type");
                     } else if (image_type == Convertors.DISPLAY_THUMB) {
                         bImage = row.getBytes("thumb");
                         length = row.getInt("thumblength");
-                        type = row.getString("type");
                 
                     } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                         bImage = row.getBytes("processed");
                         length = row.getInt("processedlength");
-                        type = row.getString("type");
-                    }
-                    else if (image_type == 4) {
-                        bImage = row.getBytes("image");
-                        type="image/jpeg";
-                        length=972;
-                        
                     }
                     
-                    
+                    type = row.getString("type");
 
                 }
             }
@@ -264,7 +230,40 @@ public void insertPic(byte[] b, String type, String name, String user) {
     }
     
     //Methods for managing profileImage
-    
+    public Pic getAvatar(String user){
+        Session session = cluster.connect("instagrim");
+        ByteBuffer bImage = null;
+        String type = null;
+        int length = 0;
+        try {
+            ResultSet rs = null;
+         
+            Statement select = QueryBuilder.select().column("image").from("instagrim", "userprofiles")
+                .where((QueryBuilder.eq("login", "e")));
+            System.out.println("Statement: " + select);
+            rs = session.execute(select);
+            session.close();
+
+            if (rs.isExhausted()) {
+                System.out.println("No Images returned");
+                return null;
+            } else {
+                for (Row row : rs) {
+                    bImage = row.getBytes("image");
+                    
+
+                }
+            }
+        } catch (Exception et) {
+            System.out.println("Can't get Pic" + et);
+            return null;
+        }
+        Pic p = new Pic();
+        p.setPic(bImage, length, type);
+
+        return p; 
+    }
+
 
     
 

@@ -16,19 +16,13 @@ import com.datastax.driver.core.utils.Bytes;
 
 import java.io.FileInputStream;
 import java.lang.*;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
@@ -59,9 +53,12 @@ public class User {
             System.out.println("Can't check your password");
             return false;
         }
+        if(IsValidUser(username,Password))
+        {
+        	return false;
+        }
         
        
-        
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
@@ -79,6 +76,7 @@ public class User {
         
         //We are assuming this always works.  Also a transaction would be good here !
                 return true;
+                
     }
     
     public boolean IsValidUser(String username, String Password){
@@ -92,7 +90,6 @@ public class User {
         }
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
-        
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( boundStatement.bind( username));
@@ -101,9 +98,8 @@ public class User {
             return false;
         } else {
         	for (Row row : rs) {
-                
+        		System.out.println("testtest");
                 String StoredPass = row.getString("password");
-              
                 if (StoredPass.compareTo(EncodedPassword) == 0)
                 	
                 return true;
@@ -184,7 +180,7 @@ public class User {
     		if(avatarPic!=null)
            	{
            	 try {
-                System.out.println("length of the pic" + avatarPic.length);
+                
                 ByteBuffer buffer = ByteBuffer.wrap(avatarPic);
                 //The following is a quick and dirty way of doing this, will fill the disk quickly !
                 PreparedStatement psInsertPic = session.prepare("update userprofiles Set imageAvatar=? where login = ?");
@@ -196,31 +192,11 @@ public class User {
             
            	}
      }
-    	
+    	}
       	 
    	 
    	 
 
 
 
-private void DisplayAvatar(String Image, HttpServletResponse response) throws ServletException, IOException {
-    PicModel tm = new PicModel();
-    tm.setCluster(cluster);
-    Pic p = tm.getPic(4, java.util.UUID.fromString(Image));
 
-    OutputStream out = response.getOutputStream();
-    response.setContentType(p.getType());
-    response.setContentLength(p.getLength());
-    System.out.println("information"+p.getType()+p.getLength());
-    //out.write(Image);
-    InputStream is = new ByteArrayInputStream(p.getBytes());
-    BufferedInputStream input = new BufferedInputStream(is);
-    byte[] buffer = new byte[8192];
-    for (int length = 0; (length = input.read(buffer)) > 0;) {
-        out.write(buffer, 0, length);
-    }
-    out.close();
-}
-
-
-}

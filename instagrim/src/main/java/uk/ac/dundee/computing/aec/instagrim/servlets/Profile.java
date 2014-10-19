@@ -1,10 +1,7 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -15,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import com.datastax.driver.core.Cluster;
 
@@ -30,12 +28,12 @@ import uk.ac.dundee.computing.aec.instagrim.stores.States;
  * Servlet implementation class Profile
  */
 @WebServlet(name = "/Profile", urlPatterns = { "/Profile",
-    "/Profile/*", "/Profile/Avatar","/Profile/Avatar/*"})
+    "/Profile/*" })
 @MultipartConfig
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	 private Cluster cluster;
-	 private boolean change=false;
+	
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -57,39 +55,35 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+		System.out.println("dohodit2345?");
 		
 		String args[] = Convertors.SplitRequestPath(request);
-		System.out.print(args[2]);
-		 try {
+		System.out.println(args[2]+"  "+args[1]+" "+args[0] + " argument");
+		if(args[2].equals("Settings")){System.out.print("vhodit");changeProfile(request,response); }
+		else{ 	
+			try {
 			 DisplayProfile(args[2], request, response);
-			
-			// DisplayAvatar(args[3],  response);
 	        } catch (Exception et) {
-	        	System.out.print("checkerror");
-	            //error("Bad Operator", response);
-	           
-	        }
+	        	
+	        }}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 System.out.println("dowlo1234");
-       	 String name=request.getParameter("name");
+		System.out.print("dohodit23456?");
+		String name=request.getParameter("name");
          String surname=request.getParameter("surname");
          String login=request.getParameter("login");
        		User us = new User();
-       		PicModel pic = new PicModel();
        		us.setCluster(cluster);
        		us.updateProfile(name,surname,login);
+       		changeAvatar( request,  response);
        	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
          request.setAttribute("firstname", name);
          request.setAttribute("lastname", surname);
-         
-         
-       
+        
          System.out.println(name+surname+login+"davaj uze");
          try {
          	rd.forward(request, response);
@@ -100,23 +94,47 @@ public class Profile extends HttpServlet {
 		
 		 
 	}
+	private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalStateException, ServletException
+	{	String type = "avatar";
+	System.out.println("bulkaaaaa");
+		  for (Part part : request.getParts()) {
+	            String filename = part.getName();
+	            
+	            InputStream is = request.getPart(part.getName()).getInputStream();
+	            int i = is.available();
+	            HttpSession session=request.getSession();
+	            LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+	            String username="majed";
+	            if (lg.getlogedin()){
+	                username=lg.getUsername();
+	            }
+	            if (i > 0) {
+	                byte[] b = new byte[i + 1];
+	                is.read(b);
+	                System.out.println("Length : " + b.length);
+	                PicModel tm = new PicModel();
+	                tm.setCluster(cluster);
+	                tm.insertPic(b, type, filename, username);
+	                is.close();
+	            }
+		  }
+	}
+	
 	
 	protected void DisplayProfile(String User, HttpServletRequest request, HttpServletResponse response)
 	{
-		System.out.println("hujnja");
+		
 		PicModel pm = new PicModel();
         pm.setCluster(cluster);
 		User tm = new User();
         tm.setCluster(cluster);
 	    tm.getInfo(User);
-	    Pic lsPics = pm.getAvatar(User);    
+	    //Pic lsPics = pm.getAvatar(User);    
         String name=tm.getName();
         String surname=tm.getSurname();
        RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
         request.setAttribute("firstname", name);
         request.setAttribute("lastname", surname);
-        System.out.println(lsPics+"provero4ka"+lsPics.getSUUID());
-     //   request.setAttribute("avatar", lsPics);
         	try {
         		rd.forward(request, response);
         	}
@@ -125,25 +143,27 @@ public class Profile extends HttpServlet {
         	}
 		
 	}
-	  private void DisplayAvatar(String Image, HttpServletResponse response) throws ServletException, IOException {
-	        PicModel tm = new PicModel();
-	        tm.setCluster(cluster);
-	        Pic p = tm.getPic(4, java.util.UUID.fromString(Image));
-	  
-	        OutputStream out = response.getOutputStream();
-	        response.setContentType(p.getType());
-	        response.setContentLength(p.getLength());
-	        System.out.println("information"+p.getType()+p.getLength());
-	        //out.write(Image);
-	        InputStream is = new ByteArrayInputStream(p.getBytes());
-	        BufferedInputStream input = new BufferedInputStream(is);
-	        byte[] buffer = new byte[8192];
-	        for (int length = 0; (length = input.read(buffer)) > 0;) {
-	            out.write(buffer, 0, length);
-	        }
-	        out.close();
-	    }
 	
+	private void changeProfile(HttpServletRequest request, HttpServletResponse response)
+	{
+		 
+		 String name=request.getParameter("name");
+	     String surname=request.getParameter("surname");
+	     String login=request.getParameter("login");
+	     System.out.println(name+surname+login);
+	     RequestDispatcher rd=request.getRequestDispatcher("/ChangeProfileInfo.jsp");
+	     request.setAttribute("firstname", name);
+	     request.setAttribute("lastname", surname);
+	     //request.setAttribute("UserName", login);
+	     System.out.println(name+surname+login);
+	     try {
+	    	  System.out.println(name+surname+login);
+	     	rd.forward(request, response);
+			} catch (ServletException | IOException e) {
+				e.printStackTrace();
+			}
+	}
 	
-
 }
+
+

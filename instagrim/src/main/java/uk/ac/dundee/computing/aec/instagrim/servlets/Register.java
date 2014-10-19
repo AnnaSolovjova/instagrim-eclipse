@@ -62,15 +62,28 @@ public class Register extends HttpServlet {
         String surname=request.getParameter("surname");
         String email=request.getParameter("email");
         String addresses=request.getParameter("addresses");
+        
         User us=new User();
-        System.out.println("mandarin1");
-       us.setCluster(cluster);
+        us.setCluster(cluster);
         System.out.println("mandarin2");
         boolean success=us.RegisterUser(username, password,name,surname,email,addresses);
-        System.out.println("mandarin333");
+        
         if(success==true) 
+        {
         uploadAvatar(username);
-	response.sendRedirect("/Instagrim");
+        RequestDispatcher rd=request.getRequestDispatcher("/Instagrim");
+        request.setAttribute("status", "0");
+        rd.forward(request,response);
+        }
+        else{
+        RequestDispatcher rd=request.getRequestDispatcher("register.jsp");
+        request.setAttribute("status", "1");
+        rd.forward(request,response);
+        
+        }
+        
+       
+        
         
     }
     
@@ -88,7 +101,6 @@ public class Register extends HttpServlet {
                   PicModel tm = new PicModel();
                   tm.setCluster(cluster);
                   tm.insertPic(b, type, filename, username);
-
                   is.close();
               }
               

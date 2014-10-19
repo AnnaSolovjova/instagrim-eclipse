@@ -18,14 +18,11 @@
  position: relative;
  top: 20px;	
  overflow: hidden;
-  border: 1px solid black;
 }
 #tags
 {
-
     float: left;
 	width:150px;
-	 border: 1px solid black;
 }
 #inputW
 {
@@ -51,9 +48,13 @@ position:relative;
 
     </head>
     <body>
+            
+            <%String status = (String) request.getAttribute("status");;
+            System.out.println(status);%>
         <header>
         <h1>InstaGrim ! </h1>
         <h2>Your world in Black and White</h2>
+
         </header>
         <nav>
             <ul>
@@ -67,6 +68,7 @@ position:relative;
             <h3>Register as user</h3>
          <form method="POST"  action="Register">
             <div id="Rform">
+           <%if (status=="1"){ %><p>Couldn't register the user.</p> <%} %>
                 <div id="tags"><ul>
                     <li>User Name </li>
                     <li>Password </li>
@@ -77,17 +79,22 @@ position:relative;
                 
                  </ul></div>
                    <div id="inputW">
-                    <input type="text" name="username" class="menu"><br/>
-                    <input type="password" name="password" class="menu"> <br/>
-                    <input type="text" name="name" class="menu"> <br/>
-                    <input type="text" name="surname" class="menu"> <br/>
-                    <input type="text" name="email" class="menu"> <br/>
-                    <input type="text" name="addresses" class="menu"> <br/>
+                    <input type="text" name="username" class="menu" id="1" onclick="myFunction(this.value)"><br/>
+                      
+                    <input type="password" name="password" class="menu" id="2" onchange="myFunction2(this.value)"> <br/>
+                    <input type="text" name="name" class="menu" id="3"> <br/>
+                    <input type="text" name="surname" class="menu" id="4"> <br/>
+                    <input type="text" name="email" class="menu" id="5"> <br/>
+                    <input type="text" name="addresses" class="menu" id="6"> <br/>
                	   </div>
           
              <br/>  </div>
-             <div id="button"> <input type="submit" value="Register"> </div> 
-              
+             
+             <div id="button"> <input type="submit" value="Register" id="registerB">
+			 <script src="validPassword.js" type="text/javascript"></script>
+            
+              </div> 
+             
             </form>
 
         </article>

@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ProfileChange</title>
 </head>
 <body>
@@ -30,7 +30,7 @@ byte[] avatar =(byte[])request.getAttribute("avatarPic");
         </nav>
         
    <% 
-         if(!change){
+         
          
             if (name == null) {
         %>
@@ -38,7 +38,7 @@ byte[] avatar =(byte[])request.getAttribute("avatarPic");
         <%
         	} else{
         %>	
-         	<form action="/Instagrim/Profile/<%=UserName%>" method="Post">
+         	<form enctype="multipart/form-data" action="/Instagrim/Profile/<%=UserName%>" method="Post">
          	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
        		<p >Name: <input type="text" name="name" class="menu" value=<%=name%>> <p>
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>
@@ -49,8 +49,7 @@ byte[] avatar =(byte[])request.getAttribute("avatarPic");
 
           <% } %>
             
-          <%}else {System.out.println("rabotaet come on");}%>
-           
+         
        
 </body>
 </html>
