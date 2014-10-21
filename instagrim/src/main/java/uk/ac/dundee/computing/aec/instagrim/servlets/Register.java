@@ -70,12 +70,14 @@ public class Register extends HttpServlet {
         
         if(success==true) 
         {
+        	System.out.println("odin");
         uploadAvatar(username);
-        RequestDispatcher rd=request.getRequestDispatcher("/Instagrim");
+        RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
         request.setAttribute("status", "0");
         rd.forward(request,response);
         }
         else{
+        	System.out.println("dva");
         RequestDispatcher rd=request.getRequestDispatcher("register.jsp");
         request.setAttribute("status", "1");
         rd.forward(request,response);

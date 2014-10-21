@@ -59,7 +59,7 @@ public class Profile extends HttpServlet {
 		
 		String args[] = Convertors.SplitRequestPath(request);
 		System.out.println(args[2]+"  "+args[1]+" "+args[0] + " argument");
-		if(args[2].equals("Settings")){System.out.print("vhodit");changeProfile(request,response); }
+		if(args[2].equals("Settings")){changeProfile(request,response); }
 		else{ 	
 			try {
 			 DisplayProfile(args[2], request, response);
@@ -83,8 +83,6 @@ public class Profile extends HttpServlet {
        	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
          request.setAttribute("firstname", name);
          request.setAttribute("lastname", surname);
-        
-         System.out.println(name+surname+login+"davaj uze");
          try {
          	rd.forward(request, response);
     		} catch (ServletException | IOException e) {
@@ -155,9 +153,8 @@ public class Profile extends HttpServlet {
 	     request.setAttribute("firstname", name);
 	     request.setAttribute("lastname", surname);
 	     //request.setAttribute("UserName", login);
-	     System.out.println(name+surname+login);
 	     try {
-	    	  System.out.println(name+surname+login);
+	    	 
 	     	rd.forward(request, response);
 			} catch (ServletException | IOException e) {
 				e.printStackTrace();

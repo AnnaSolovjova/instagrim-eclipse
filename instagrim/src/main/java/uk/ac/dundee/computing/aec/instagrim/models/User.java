@@ -53,33 +53,34 @@ public class User {
             System.out.println("Can't check your password");
             return false;
         }
-        if(IsValidUser(username,Password))
+        String type="register";
+        if(IsValidUser(username,Password,type))
         {
         	return false;
         }
-        
        
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
-       // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
-      //  BoundStatement boundStatement2 = new BoundStatement(ps2);
-        try{
-        	session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
-        	//session.execute( boundStatement2.bind(Email,username));
-        }catch(Exception e)
-        {
-        	System.out.println("fail"+Email);	
-        	return false;
-        }
-        
-        //We are assuming this always works.  Also a transaction would be good here !
+        // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
+        // BoundStatement boundStatement2 = new BoundStatement(ps2);
+        	try{
+        		System.out.println("tri");
+        		session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
+        		//session.execute( boundStatement2.bind(Email,username));
+        	}catch(Exception e)
+        	{
+        		
+        		System.out.println("fail"+Email);	
+        		return false;
+        	}
+        	//If code passed all the checks
                 return true;
                 
     }
     
-    public boolean IsValidUser(String username, String Password){
+    public boolean IsValidUser(String username, String Password,String type){
         AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
@@ -94,15 +95,13 @@ public class User {
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( boundStatement.bind( username));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned");
             return false;
         } else {
         	for (Row row : rs) {
-        		System.out.println("testtest");
+        		if(type.equals("register")){return true;}
                 String StoredPass = row.getString("password");
                 if (StoredPass.compareTo(EncodedPassword) == 0)
-                	
-                return true;
+                	return true;
             }
         }
    

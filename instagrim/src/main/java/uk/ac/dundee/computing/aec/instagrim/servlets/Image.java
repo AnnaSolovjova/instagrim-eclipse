@@ -32,6 +32,9 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/Image",
     "/Image/*",
     "/Thumb/*",
+    "/ImageEditMode/*",
+    "/ImageEditMode",
+    "/ImageDel/*",
     "/Images",
     "/Images/*"
 })
@@ -54,7 +57,8 @@ public class Image extends HttpServlet {
         CommandsMap.put("Image", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
-
+        CommandsMap.put("ImageEditMode", 4);
+        CommandsMap.put("ImageDel", 5);
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -90,6 +94,21 @@ public class Image extends HttpServlet {
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 System.out.println(args[1]+args[2]+"vot4");
                 break;
+            case 4:
+            	
+            	RequestDispatcher rd = request.getRequestDispatcher("/ImageMaintainance.jsp");
+                request.setAttribute("uuid", args[3]);
+                request.setAttribute("login", args[2]);
+                rd.forward(request, response);
+                break;
+            case 5:
+              	System.out.println(args[0]+" "+args[1]+" "+args[2]+" remember");
+            	deletePic(args[2]);
+          
+            	String login=request.getParameter("login");
+            	RequestDispatcher rd1 = request.getRequestDispatcher("/Images/"+login);
+                rd1.forward(request, response);
+                break;
             default:
                 error("Bad Operator", response);
         }
@@ -102,6 +121,7 @@ public class Image extends HttpServlet {
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
         request.setAttribute("Pics", lsPics);
+        request.setAttribute("login", User);
         rd.forward(request, response);
 
     }
@@ -159,6 +179,13 @@ public class Image extends HttpServlet {
         }
 
     }
+    private void deletePic(String picid)
+    {
+    	PicModel pm =new PicModel();
+    	pm.setCluster(cluster);
+    	pm.deletePic(picid);
+    }
+    
 
     private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
 

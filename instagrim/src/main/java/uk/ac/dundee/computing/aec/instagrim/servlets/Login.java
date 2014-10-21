@@ -6,9 +6,15 @@
 
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
+import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Session;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
@@ -51,11 +58,14 @@ public class Login extends HttpServlet {
         String username=request.getParameter("username");
         String password=request.getParameter("password");
         
+        
+        
         User us=new User();
         us.setCluster(cluster);
-        boolean isValid=us.IsValidUser(username, password);
+        boolean isValid=us.IsValidUser(username, password,"login");
         HttpSession session=request.getSession();
         System.out.println("Session in servlet "+session);
+        
         if (isValid){
             LoggedIn lg= new LoggedIn();
             lg.setLogedin();
@@ -65,6 +75,9 @@ public class Login extends HttpServlet {
             System.out.println("Session in servlet "+session);
             RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
             rd.forward(request,response);
+        
+            		
+            
             
         }else{
             response.sendRedirect("/Instagrim/login.jsp");

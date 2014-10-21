@@ -119,6 +119,26 @@ public void insertPic(byte[] b, String type, String name, String user) {
         return null;
     }
     
+    
+    public void deletePic(String picid)
+    {
+    	System.out.println("CHECK"+picid);
+    	 Session session = cluster.connect("instagrim");
+         PreparedStatement ps = session.prepare("delete from userpiclist where picid =?");
+    	 PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
+         ResultSet rs,rs2 = null;
+         	BoundStatement boundStatement = new BoundStatement(ps);
+        	BoundStatement boundStatement2 = new BoundStatement(ps2);
+         rs = session.execute( boundStatement.bind(java.util.UUID.fromString(picid)));
+         rs2 = session.execute( boundStatement2.bind(java.util.UUID.fromString(picid)));
+      
+         if (rs2.isExhausted()) {
+             System.out.println("No images deleted");
+            
+         } 
+    }
+    
+    
     public byte[] picdecolour(String picid,String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instagrim/" + picid));
@@ -151,7 +171,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("select picid from userpiclist where user =?");
+        PreparedStatement ps = session.prepare("select picid from userpiclist where user =?  ALLOW FILTERING");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute(
@@ -239,7 +259,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
             ResultSet rs = null;
          
             Statement select = QueryBuilder.select().column("image").from("instagrim", "userprofiles")
-                .where((QueryBuilder.eq("login", "e")));
+                .where((QueryBuilder.eq("login",user)));
             System.out.println("Statement: " + select);
             rs = session.execute(select);
             session.close();

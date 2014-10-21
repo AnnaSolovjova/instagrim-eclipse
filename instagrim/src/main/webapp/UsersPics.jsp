@@ -15,6 +15,7 @@
         <link rel="stylesheet" type="text/css" href="/Instagrim/Styles.css" />
     </head>
     <body>
+       <%String login=(String)request.getAttribute("login"); %>
         <header>
         
         <h1>InstaGrim ! </h1>
@@ -44,7 +45,7 @@
                 System.out.println(p.getSUUID());
 
         %>
-       <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+       <a href="/Instagrim/ImageEditMode/<%=login%>/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
 
             }
             }
