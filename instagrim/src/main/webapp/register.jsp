@@ -12,38 +12,7 @@
         <title>Instagrim</title>
         <link rel="stylesheet" type="text/css" href="Styles.css" />
         
-        <style>
-#Rform
-{	
- position: relative;
- top: 20px;	
- overflow: hidden;
-}
-#tags
-{
-    float: left;
-	width:150px;
-}
-#inputW
-{
-    float: left;
-	 border: 1px solid black;
-}
-.menu
-{
-margin-top:5px;
-}
-ul
-{
-margin-top:3px;
-line-height: 163%;
-}
-#button
-{
-margin-top:50px;
-position:relative;
-}
-</style>
+      
 
 
     </head>
@@ -79,20 +48,41 @@ position:relative;
                 
                  </ul></div>
                    <div id="inputW">
-                    <input type="text" name="username" class="menu" id="1" onclick="myFunction(this.value)"><br/>
+                    <input type="text" name="username" class="menu" id="login" onchange="myFunction2()"><br/><p id="loginP"></p>
                       
-                    <input type="password" name="password" class="menu" id="2" onchange="myFunction2(this.value)"> <br/>
+                    <input type="password" name="password" class="menu" id="pass" onchange="myFunction()"> <br/><p id="passP"></p>
                     <input type="text" name="name" class="menu" id="3"> <br/>
                     <input type="text" name="surname" class="menu" id="4"> <br/>
                     <input type="text" name="email" class="menu" id="5"> <br/>
                     <input type="text" name="addresses" class="menu" id="6"> <br/>
                	   </div>
           
-             <br/>  </div>
+             </div>
+             <script >
+             function myFunction() {
+				 alert("Checking your input");
+				 var password=document.getElementById('pass');
+				 if(password.length<5||password.length>10){alert("Password should be 5 to 10 chatacters");
+				     }
+             }
+             function myFunction2() {
+			 	alert("Checking your input");
+			 	var login=document.getElementById('login');
+			 	if(login.length<3||login.length>10){alert("Login should be 3 to 10 chatacters");}
+			 
+		     }
+             function myFunction3() {
+        	 	var password=document.getElementById('pass');
+		 		var login=document.getElementById('login');
+		 		if(login.length<3||login.length>10){window.location.href = "register.jsp";}
+		 		if(password.length<5||password.length>10){window.location.href = "register.jsp";}
+             }
+	     
+			</script>
+            <noscript>Sorry, your browser does not support JavaScript!</noscript>
              
-             <div id="button"> <input type="submit" value="Register" id="registerB">
-			 <script src="validPassword.js" type="text/javascript"></script>
-            
+             <div id="button"> <input type="submit" value="Register" id="registerB" onclick="myFunction3()">
+			
               </div> 
              
             </form>

@@ -50,7 +50,7 @@ public class Avatar extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
     private void DisplayAvatar(HttpServletResponse response,String User) throws ServletException, IOException {
-        System.out.print(User+"USERCHECK");
+        
     	PicModel tm = new PicModel();
         tm.setCluster(cluster);
   

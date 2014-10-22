@@ -1,6 +1,8 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -8,6 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+
+import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -36,7 +40,9 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/ImageEditMode",
     "/ImageDel/*",
     "/Images",
-    "/Images/*"
+    "/Images/*",
+    "/ImageUp",
+    "/ImageUp/*"
 })
 @MultipartConfig
 
@@ -59,6 +65,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("Thumb", 3);
         CommandsMap.put("ImageEditMode", 4);
         CommandsMap.put("ImageDel", 5);
+        CommandsMap.put("ImageUp", 6);
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -73,6 +80,7 @@ public class Image extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
         String args[] = Convertors.SplitRequestPath(request);
+        String login;
         int command;
         try {
             command = (Integer) CommandsMap.get(args[1]);
@@ -92,7 +100,7 @@ public class Image extends HttpServlet {
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
-                System.out.println(args[1]+args[2]+"vot4");
+                System.out.println(args[2]+"vot4");
                 break;
             case 4:
             	
@@ -100,14 +108,23 @@ public class Image extends HttpServlet {
                 request.setAttribute("uuid", args[3]);
                 request.setAttribute("login", args[2]);
                 rd.forward(request, response);
+                System.out.println(args[2]+"vot11");
                 break;
             case 5:
-              	System.out.println(args[0]+" "+args[1]+" "+args[2]+" remember");
+              	
             	deletePic(args[2]);
-          
-            	String login=request.getParameter("login");
+            	 System.out.println(args[2]+"vot5");
+       
+            	login=request.getParameter("login");
             	RequestDispatcher rd1 = request.getRequestDispatcher("/Images/"+login);
                 rd1.forward(request, response);
+                break;
+            case 6:
+              	
+            	updatePic(args[2],response);
+            	login=request.getParameter("login");
+            	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
+                rd2.forward(request, response);
                 break;
             default:
                 error("Bad Operator", response);
@@ -132,14 +149,17 @@ public class Image extends HttpServlet {
   
         
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
-        
+        System.out.print("CHUPAKABRA"+ p.getBytes());
         OutputStream out = response.getOutputStream();
 
         response.setContentType(p.getType());
         response.setContentLength(p.getLength());
         //out.write(Image);
+      
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
+        
+       
         byte[] buffer = new byte[8192];
         for (int length = 0; (length = input.read(buffer)) > 0;) {
             out.write(buffer, 0, length);
@@ -185,7 +205,22 @@ public class Image extends HttpServlet {
     	pm.setCluster(cluster);
     	pm.deletePic(picid);
     }
-    
+    private void updatePic(String picid, HttpServletResponse response) throws IOException
+    {	
+    	
+    	PicModel pm =new PicModel();
+    	pm.setCluster(cluster);
+    	Pic p = pm.getPic(1,java.util.UUID.fromString(picid));
+    	System.out.print(picid +"CHUPAKABRA2"+ p.getBytes());
+    	OutputStream out = response.getOutputStream();
+    	response.setContentType(p.getType());
+        response.setContentLength(p.getLength());
+    	InputStream in = new ByteArrayInputStream(p.getBytes());
+    	BufferedImage bImageFromConvert = ImageIO.read(in);
+    	
+    	pm.updatePic(bImageFromConvert,picid);
+    	
+    }
 
     private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
 
@@ -196,4 +231,5 @@ public class Image extends HttpServlet {
         out.close();
         return;
     }
+   
 }

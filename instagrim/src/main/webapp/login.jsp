@@ -37,7 +37,7 @@
                 </ul>
                 </div>
                   <div id="inpurW"><input type="text" name="username" class="menu">  <br/>
-                <input type="password" name="password" class="menu">  <br/>
+          	   					   <input type="password" name="password" class="menu">  <br/>
                 </div>
               </div>
                <div id="button">  <input type="submit" value="Login" id="button"> </div>>
