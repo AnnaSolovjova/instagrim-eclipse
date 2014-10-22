@@ -36,6 +36,7 @@ public class User {
     Cluster cluster;
     String name="";
     String surname="";
+    String email="";
     byte[] avatar=null;
     public User(){
         
@@ -60,14 +61,14 @@ public class User {
         }
        
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name) Values(?,?,?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,email) Values(?,?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
-        // PreparedStatement ps2 = session.prepare("update userprofiles set email=email+  {?} where login= ? ");
-        // BoundStatement boundStatement2 = new BoundStatement(ps2);
+        // PreparedStatement ps2 = session.prepare("update userprofiles SET email+=? where login= ? ");
+         //BoundStatement boundStatement2 = new BoundStatement(ps2);
         	try{
         		System.out.println("tri");
-        		session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname));
+        		session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname,Email));
         		//session.execute( boundStatement2.bind(Email,username));
         	}catch(Exception e)
         	{
@@ -129,6 +130,7 @@ public class User {
         	
                 name = row.getString("first_name");
                 surname = row.getString("last_name");
+                email = row.getString("email");
                 System.out.println("matrjowka");
                 
                }
@@ -142,8 +144,8 @@ public class User {
      public String getSurname(){
      return surname;
      }
-     public byte[] getAvatar(){
-         return avatar;
+     public String getEmail(){
+         return email;
          }
      
     

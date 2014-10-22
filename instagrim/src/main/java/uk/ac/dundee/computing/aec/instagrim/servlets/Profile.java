@@ -22,7 +22,7 @@ import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
-import uk.ac.dundee.computing.aec.instagrim.stores.States;
+
 
 /**
  * Servlet implementation class Profile
@@ -72,10 +72,11 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("dohodit23456?");
+		
 		String name=request.getParameter("name");
          String surname=request.getParameter("surname");
          String login=request.getParameter("login");
+         String email=request.getParameter("email");
        		User us = new User();
        		us.setCluster(cluster);
        		us.updateProfile(name,surname,login);
@@ -83,6 +84,7 @@ public class Profile extends HttpServlet {
        	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
          request.setAttribute("firstname", name);
          request.setAttribute("lastname", surname);
+         request.setAttribute("email", email);
          try {
          	rd.forward(request, response);
     		} catch (ServletException | IOException e) {
@@ -130,9 +132,11 @@ public class Profile extends HttpServlet {
 	    //Pic lsPics = pm.getAvatar(User);    
         String name=tm.getName();
         String surname=tm.getSurname();
+        String email=tm.getEmail();
        RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
         request.setAttribute("firstname", name);
         request.setAttribute("lastname", surname);
+        request.setAttribute("email",email );
         	try {
         		rd.forward(request, response);
         	}

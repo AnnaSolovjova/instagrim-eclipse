@@ -62,14 +62,12 @@ public void insertPic(byte[] b, String type, String name, String user) {
         	Convertors convertor = new Convertors();
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
-            java.util.UUID picid = convertor.getTimeUUID();
-            System.out.println(picid+"lalalal");
-            
+            java.util.UUID picid = convertor.getTimeUUID();    
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
             Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
             output.write(b);
-            
+         
            if(type!="avatar"){
             String types[]=Convertors.SplitFiletype(type);
             byte []  thumbb = picresize(picid.toString(),types[1]);
@@ -79,6 +77,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instagrim");
+           
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
@@ -88,6 +87,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
             session.close();
+           
            }else{
         	
         	   Session session = cluster.connect("instagrim");
@@ -159,7 +159,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
     
     public void deletePic(String picid)
     {
-    	System.out.println("CHECK"+picid);
+    	
     	 Session session = cluster.connect("instagrim");
          PreparedStatement ps = session.prepare("delete from userpiclist where picid =?");
     	 PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
@@ -169,10 +169,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
          rs = session.execute( boundStatement.bind(java.util.UUID.fromString(picid)));
          rs2 = session.execute( boundStatement2.bind(java.util.UUID.fromString(picid)));
       
-         if (rs2.isExhausted()) {
-             System.out.println("No images deleted");
-            
-         } 
+        
     }
     
     
@@ -234,7 +231,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
                 Pic pic = new Pic();
                 
                 java.util.UUID UUID = row.getUUID("picid");
-                System.out.println("UUID" + UUID.toString());
+               
                 pic.setUUID(UUID);
                 Pics.add(pic);
 
@@ -259,17 +256,18 @@ public void insertPic(byte[] b, String type, String name, String user) {
             if (image_type == Convertors.DISPLAY_IMAGE) {
                 
                 ps = session.prepare("select image,imagelength,type from pics where picid =?");
-                System.out.println("TEST1");
+         
             } else if (image_type == Convertors.DISPLAY_THUMB) {
-            	System.out.println("TEST2");
+            
               ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
+              
+              
             } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                 ps = session.prepare("select processed,processedlength,type from pics where picid =?");
             }
             	
             BoundStatement boundStatement = new BoundStatement(ps);
-            rs = session.execute(boundStatement.bind(  picid));
-            System.out.println("MOKAKA "+picid);
+            rs = session.execute(boundStatement.bind(picid));
             if (rs.isExhausted()) {
                 System.out.println("No Images returned");
                 return null;
@@ -283,8 +281,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
                     } else if (image_type == Convertors.DISPLAY_THUMB) {
                         bImage = row.getBytes("thumb");
                         length = row.getInt("thumblength");
-                        
-                        System.out.println("SETT2 "+ bImage);
+
                 
                     } else if (image_type == Convertors.DISPLAY_PROCESSED) {
                         bImage = row.getBytes("processed");
@@ -301,7 +298,6 @@ public void insertPic(byte[] b, String type, String name, String user) {
         }
         session.close();
         Pic p = new Pic();
-        System.out.println("babajka2"+bImage);
         p.setPic(bImage, length, type);
 
         return p;
@@ -319,7 +315,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
          
             Statement select = QueryBuilder.select().column("image").from("instagrim", "userprofiles")
                 .where((QueryBuilder.eq("login",user)));
-            System.out.println("Statement: " + select);
+           
             rs = session.execute(select);
             session.close();
 
@@ -348,8 +344,11 @@ public void insertPic(byte[] b, String type, String name, String user) {
     {	Session session = cluster.connect("instagrim");
     	ByteBuffer bImage = null;
     	PreparedStatement ps = null; ResultSet rs = null;BoundStatement boundStatement;
-    	
-    	byte[] newImage=toByte(grey(image));
+    	byte[] newImage=new byte[20];
+    		newImage=toByte(image);
+    	ByteBuffer buffer = ByteBuffer.wrap(newImage);
+    	   System.out.println(buffer+"WHAT"+newImage); 
+    	/*byte[] newImage=toByte(grey(image));
     	int length= newImage.length;
     	byte[] thumb=toByte(grey(image));
     	int thumblength= thumb.length;
@@ -359,11 +358,13 @@ public void insertPic(byte[] b, String type, String name, String user) {
     	
         ByteBuffer thumbbuf=ByteBuffer.wrap(toByte(image));
         ByteBuffer processedbuf=ByteBuffer.wrap(toByte(image));
-    	
-        ps = session.prepare("UPDATE Pics SET image=?, thumb=?, processed=? ,imagelength=? ,thumblength=?,processedlength=?  WHERE picid =?");
+    	*/
+        ps = session.prepare("UPDATE Pics SET image=?, thumb=?, processed=?  WHERE picid =?");
         boundStatement = new BoundStatement(ps);
-        rs = session.execute(boundStatement.bind(buffer,thumbbuf,processedbuf,length,thumblength,processedlength, (java.util.UUID.fromString(picid))));
-            
+        rs = session.execute(boundStatement.bind(buffer,buffer,buffer, (java.util.UUID.fromString(picid))));
+        
+    	
+    	
     	
     }
 

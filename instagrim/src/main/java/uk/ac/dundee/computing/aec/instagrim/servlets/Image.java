@@ -25,7 +25,9 @@ import javax.servlet.http.Part;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.models.MultimediaModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
+import uk.ac.dundee.computing.aec.instagrim.stores.Comment;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 
@@ -42,7 +44,9 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/Images",
     "/Images/*",
     "/ImageUp",
-    "/ImageUp/*"
+    "/ImageUp/*",
+    "/InputComment",
+    "/InputComment/*"
 })
 @MultipartConfig
 
@@ -59,13 +63,13 @@ public class Image extends HttpServlet {
      */
     public Image() {
         super();
-        // TODO Auto-generated constructor stub
         CommandsMap.put("Image", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
         CommandsMap.put("ImageEditMode", 4);
         CommandsMap.put("ImageDel", 5);
         CommandsMap.put("ImageUp", 6);
+        CommandsMap.put("InputComment",7);
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -89,43 +93,65 @@ public class Image extends HttpServlet {
             error("Bad Operator", response);
             return;
         }
-        System.out.println("Commando"+command);
+      
         switch (command) {
             case 1:
                 DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
             case 2:
                 DisplayImageList(args[2], request, response);
-                System.out.println(args[2]+"vot3");
+                
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
-                System.out.println(args[2]+"vot4");
+                
                 break;
             case 4:
-            	
+            	MultimediaModel m=new MultimediaModel();
+            	m.setCluster(cluster);
+            	java.util.LinkedList<Comment> lsComment = m.getComentsForPic(args[3]); 
             	RequestDispatcher rd = request.getRequestDispatcher("/ImageMaintainance.jsp");
                 request.setAttribute("uuid", args[3]);
                 request.setAttribute("login", args[2]);
-                rd.forward(request, response);
-                System.out.println(args[2]+"vot11");
+                request.setAttribute("Comment", lsComment);
+                rd.forward(request, response); 
                 break;
+                
             case 5:
-              	
+            	MultimediaModel m3=new MultimediaModel();
+            	m3.setCluster(cluster);
             	deletePic(args[2]);
-            	 System.out.println(args[2]+"vot5");
-       
+            	m3.deleteComment(args[2]);
             	login=request.getParameter("login");
             	RequestDispatcher rd1 = request.getRequestDispatcher("/Images/"+login);
                 rd1.forward(request, response);
                 break;
+                
             case 6:
               	
             	updatePic(args[2],response);
             	login=request.getParameter("login");
-            	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
+            	         	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
                 rd2.forward(request, response);
                 break;
+            case 7:
+            	MultimediaModel m2=new MultimediaModel();
+            	m2.setCluster(cluster);
+            	String comment=request.getParameter("comment");
+            	String login2=request.getParameter("log");
+            	HttpSession session=request.getSession();
+            	LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+                String username="majed";
+                if (lg.getlogedin()){
+                    username=lg.getUsername();
+                }
+                System.out.println("DOHODIT2"+comment +" "+login2+" "+args[2]);
+                
+            	m2.insertComment(args[2], comment, username);
+            	System.out.println("DOHODIT4");
+            	RequestDispatcher rd3 = request.getRequestDispatcher("/ImageEditMode/"+login2+"/"+args[2]);
+            	rd3.forward(request, response);
+            	break;
             default:
                 error("Bad Operator", response);
         }
@@ -133,7 +159,6 @@ public class Image extends HttpServlet {
 
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	PicModel tm = new PicModel();
-    	System.out.println(User+"user!");
         tm.setCluster(cluster);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
@@ -146,10 +171,7 @@ public class Image extends HttpServlet {
     private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-  
-        
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
-        System.out.print("CHUPAKABRA"+ p.getBytes());
         OutputStream out = response.getOutputStream();
 
         response.setContentType(p.getType());
@@ -170,7 +192,6 @@ public class Image extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getParts()!=null){
     	for (Part part : request.getParts()) {
-            System.out.println("Part Name " + part.getName());
 
             String type = part.getContentType();
             String filename = part.getName();
@@ -185,8 +206,7 @@ public class Image extends HttpServlet {
             }
             if (i > 0) {
                 byte[] b = new byte[i + 1];
-                is.read(b);
-                System.out.println("Length : " + b.length);
+                is.read(b);           
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
                 tm.insertPic(b, type, filename, username);
@@ -211,11 +231,7 @@ public class Image extends HttpServlet {
     	PicModel pm =new PicModel();
     	pm.setCluster(cluster);
     	Pic p = pm.getPic(1,java.util.UUID.fromString(picid));
-    	System.out.print(picid +"CHUPAKABRA2"+ p.getBytes());
-    	OutputStream out = response.getOutputStream();
-    	response.setContentType(p.getType());
-        response.setContentLength(p.getLength());
-    	InputStream in = new ByteArrayInputStream(p.getBytes());
+        InputStream in = new ByteArrayInputStream(p.getBytes());
     	BufferedImage bImageFromConvert = ImageIO.read(in);
     	
     	pm.updatePic(bImageFromConvert,picid);
