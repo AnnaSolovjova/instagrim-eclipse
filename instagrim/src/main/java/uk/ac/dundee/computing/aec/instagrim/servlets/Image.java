@@ -46,7 +46,8 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
     "/ImageUp",
     "/ImageUp/*",
     "/InputComment",
-    "/InputComment/*"
+    "/InputComment/*",
+    "/Like/*"
 })
 @MultipartConfig
 
@@ -70,6 +71,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("ImageDel", 5);
         CommandsMap.put("ImageUp", 6);
         CommandsMap.put("InputComment",7);
+        CommandsMap.put("Like",8);
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -110,10 +112,14 @@ public class Image extends HttpServlet {
             	MultimediaModel m=new MultimediaModel();
             	m.setCluster(cluster);
             	java.util.LinkedList<Comment> lsComment = m.getComentsForPic(args[3]); 
+            	int count=m.countLikes(args[3]);
+            	String count2=Integer.toString(count);
+            	System.out.println(count+"COUNT");
             	RequestDispatcher rd = request.getRequestDispatcher("/ImageMaintainance.jsp");
                 request.setAttribute("uuid", args[3]);
                 request.setAttribute("login", args[2]);
                 request.setAttribute("Comment", lsComment);
+                request.setAttribute("like", count2);
                 rd.forward(request, response); 
                 break;
                 
@@ -144,13 +150,25 @@ public class Image extends HttpServlet {
                 String username="majed";
                 if (lg.getlogedin()){
                     username=lg.getUsername();
-                }
-                System.out.println("DOHODIT2"+comment +" "+login2+" "+args[2]);
-                
+                }                
             	m2.insertComment(args[2], comment, username);
-            	System.out.println("DOHODIT4");
             	RequestDispatcher rd3 = request.getRequestDispatcher("/ImageEditMode/"+login2+"/"+args[2]);
             	rd3.forward(request, response);
+            	break;
+            case 8:
+            	MultimediaModel m4=new MultimediaModel();
+            	m4.setCluster(cluster);
+            	String login3=request.getParameter("log");
+            	HttpSession session2=request.getSession();
+            	LoggedIn lg2= (LoggedIn)session2.getAttribute("LoggedIn");
+                String username2="majed";
+                if (lg2.getlogedin()){
+                    username=lg2.getUsername();
+                }               
+                m4.insertLikes(username2,args[2]);
+            	RequestDispatcher rd4 = request.getRequestDispatcher("/ImageEditMode/"+login3+"/"+args[2]);
+            	rd4.forward(request, response);
+            	
             	break;
             default:
                 error("Bad Operator", response);

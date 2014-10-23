@@ -62,8 +62,8 @@ public class User {
        
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,email) Values(?,?,?,?,?)");
-       
         BoundStatement boundStatement = new BoundStatement(ps);
+        Email="{'f@baggins.com', 'baggins@gmail.com'}";
         // PreparedStatement ps2 = session.prepare("update userprofiles SET email+=? where login= ? ");
          //BoundStatement boundStatement2 = new BoundStatement(ps2);
         	try{
@@ -127,11 +127,11 @@ public class User {
           
            for (Row row : rs) {
         	  System.out.println("row"+row);
-        	
-                name = row.getString("first_name");
+        	    name = row.getString("first_name");
                 surname = row.getString("last_name");
-                email = row.getString("email");
-                System.out.println("matrjowka");
+               email = row.getString("email");
+               System.out.println("EMAIL"+email);
+               
                 
                }
            

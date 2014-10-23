@@ -6,11 +6,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+   <link rel="stylesheet" type="text/css" href="Styles.css" />
+<title>Update picture</title>
 </head>
 <body>
 <%String uuid=(String)request.getAttribute("uuid"); %>
 <%String login=(String)request.getAttribute("login"); %>
+<%String likes=(String)request.getAttribute("like"); %>
+
+
+<div id="photoMode">
+<div id="image"><img src="/Instagrim/Thumb/<%=uuid%>"></div>
+<%//Comment section on the page %>
+<div id="comment"><form action="/Instagrim/InputComment/<%=uuid%>" method="Get"> 
+<input type="text" id="comm" name="comment" value="input yout text" width=200px height=100px>
+<input type="hidden" id="log" name="log" value=<%=login%>> <input type="submit" value="Comment"> </form></div>
+ 
+ 
+<%//Like section on the page %>
+<div id="comment"><form action="/Instagrim/Like/<%=uuid%>" method="Get"> 
+<input type="text" id="like" name="like" value=<%=likes%> disabled>
+<input type="hidden" id="log" name="log" value=<%=login%>> <input type="submit" value="Like"> </form></div>
+ 
  <%
          java.util.LinkedList<Comment> lsComment = (java.util.LinkedList<Comment>) request.getAttribute("Comment");
           if (lsComment == null) {
@@ -23,15 +40,10 @@
             while (iterator.hasNext()) {
                  Comment c=(Comment)iterator.next();
                  String com=c.getComment();%>
-				<p><%=com%></p><%}}%>
+				<p ><%=com%></p><%}}%>
 
 
-
-<div id="image"><img src="/Instagrim/Thumb/<%=uuid%>"></div>
-<div id="comment"><form action="/Instagrim/InputComment/<%=uuid%>" method="Get"> 
-<input type="text" id="comm" name="comment" value="input yout text" width=200px height=100px>
-<input type="hidden" id="log" name="log" value=<%=login%>> <input type="submit" value="Comment"> </form></div>
-
+</div>
 </br>
 <form action="/Instagrim/ImageUp/<%=uuid%>" method="Get">
 <input type="hidden" id="thisField1" name="login" value=<%=login%>>

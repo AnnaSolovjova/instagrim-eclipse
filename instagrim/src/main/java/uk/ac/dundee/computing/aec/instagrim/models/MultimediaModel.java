@@ -48,15 +48,11 @@ public class MultimediaModel {
 	 public void insertComment(String picid, String comment, String user)
 	 {
 		 Session session = cluster.connect("instagrim");
-     
-         
-         PreparedStatement psInsertPic = session.prepare("insert into comments2( picid, user, commentadded, text) values(?,?,?,?)");
-          BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
-        
+		 PreparedStatement psInsertPic = session.prepare("insert into comments2( picid, user, commentadded, text) values(?,?,?,?)");
+         BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
          Date DateAdded = new Date();
-        
          session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid),  user, DateAdded, comment));
-         System.out.println("DOHODIT3");
+         
 	 }
 	 
 	 
@@ -64,14 +60,38 @@ public class MultimediaModel {
 public void deleteComment(String picid)
 {
 	Session session = cluster.connect("instagrim");
-	
     PreparedStatement psInsertPic = session.prepare("delete from comments2 where picid=?");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
-    System.out.println("DOHODIT");
     session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)));
-    System.out.println("DOHODIT2");
+  
 }
-}
+
 	 
-	
+public void insertLikes(String user,String picid)
+{
+	 Session session = cluster.connect("instagrim");
+	 PreparedStatement psInsertPic = session.prepare("insert into likes( picid, user ) values(?,?)");
+     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+     Date DateAdded = new Date();
+     session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid),  user ));
+}
+
+public int countLikes(String picid)
+{
+	 Session session = cluster.connect("instagrim");
+	 PreparedStatement psInsertPic = session.prepare("select user from likes where picid=? ALLOW FILTERING");
+     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+     ResultSet rs= session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid) ));
+     int count=0;
+     if (rs.isExhausted()) {
+         return 0;
+     } else {
+         for (Row row : rs) {
+           count++;
+         }
+      return count;   
+     }
+     
+}
+}
 

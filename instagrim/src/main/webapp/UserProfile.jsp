@@ -17,15 +17,17 @@ LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
 if (lg != null) {
  UserName = lg.getUsername();}
 String name = (String) request.getAttribute("firstname"); 
-String email = (String) request.getAttribute("email");%>   
+//String email = (String) request.getAttribute("email");%>   
 <% String surname = (String) request.getAttribute("lastname"); %>
 <% Pic lsPics = (Pic) request.getAttribute("Pics");%>
+<% String pageUserName =(String) request.getAttribute("pageUser");%>
 
-<p>Hello <%=UserName%><p>
+<p>Hello <p>Hello <%=UserName%><p><p>
+<p>This is <%=pageUserName%> Profile<p>
   <nav>
             <ul>
                 <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
-                <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
+                <li><a href="/Instagrim/Images/<%=pageUserName%>">Images</a></li>
                 <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
             </ul>
         </nav>
@@ -33,21 +35,17 @@ String email = (String) request.getAttribute("email");%>
    <% 
          
          
-            if (name == null) {
-        %>
-        	<p>No name specified</p>
-        <%
-        	} else{
+          
         %>
          	<form action="/Instagrim/Profile/Settings" method="Get">
          	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
          	<p>Avatar</p><p><image src="/Instagrim/Avatar/<%=UserName%>" height=120px width=120px></p>
        		<p>Name: <%=name%> <p><input type="hidden" id="thisField1" name="name" value=<%=name%>>
         	<p>Surname: <%=surname%><p><input type="hidden" id="thisField2" name="surname" value=<%=surname%>>
-        	<p>Name: <%=email%> <p><input type="hidden" id="thisField3" name="email" value=<%=name%>><br/>
+        	<p>Email: <%=name%> <p><input type="hidden" id="thisField3" name="email" value=<%=name%>><br/>
         	
             <input type="submit" value="Change Information"> 
-            <%} %>
+            
           
            
        </form>

@@ -41,6 +41,7 @@
                 <div id="tags"><ul>
                     <li>User Name </li>
                     <li>Password </li>
+                    <li>PasswordRepeat </li>
                     <li>Name </li>
                     <li>Surname</li>
                     <li>email </li>
@@ -48,9 +49,9 @@
                 
                  </ul></div>
                    <div id="inputW">
-                    <input type="text" name="username" class="menu" id="login" onchange="myFunction2()"><br/><p id="loginP"></p>
-                      
-                    <input type="password" name="password" class="menu" id="pass" onchange="myFunction()"> <br/><p id="passP"></p>
+                    <input type="text" name="username" class="menu" id="login" onchange="myFunction2()"><br/>
+                    <input type="password" name="password" class="menu" id="pass" onchange="myFunction()"> <br/>
+                    <input type="password" name="password" class="menu" id="pass2" onchange=myFunction() > <br/>
                     <input type="text" name="name" class="menu" id="3"> <br/>
                     <input type="text" name="surname" class="menu" id="4"> <br/>
                     <input type="text" name="email" class="menu" id="5"> <br/>
@@ -60,30 +61,32 @@
              </div>
              <script >
              function myFunction() {
-				 alert("Checking your input");
+				 
 				 var password=document.getElementById('pass');
 				 if(password.length<5||password.length>10){alert("Password should be 5 to 10 chatacters");
 				     }
              }
              function myFunction2() {
-			 	alert("Checking your input");
+			 	
 			 	var login=document.getElementById('login');
 			 	if(login.length<3||login.length>10){alert("Login should be 3 to 10 chatacters");}
 			 
 		     }
              function myFunction3() {
         	 	var password=document.getElementById('pass');
+        	 	var password2=document.getElementById('pass2');
 		 		var login=document.getElementById('login');
 		 		if(login.length<3||login.length>10){window.location.href = "register.jsp";}
 		 		if(password.length<5||password.length>10){window.location.href = "register.jsp";}
+		 		if(!password.eq(password2)){window.location.href = "register.jsp";}
              }
 	     
 			</script>
             <noscript>Sorry, your browser does not support JavaScript!</noscript>
-             
-             <div id="button"> <input type="submit" value="Register" id="registerB" onclick="myFunction3()">
+             </br>
+          
 			
-              </div> 
+              </div>    <div id="button"> <input type="submit" value="Register" id="registerB" onclick="myFunction3()" disabled>
              
             </form>
 

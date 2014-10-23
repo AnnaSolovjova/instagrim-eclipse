@@ -17,8 +17,9 @@ LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
 if (lg != null) {
  UserName = lg.getUsername();}
 String name = (String) request.getAttribute("firstname"); System.out.println(name+"wrong");
-byte[] avatar =(byte[])request.getAttribute("avatarPic");
- String surname = (String) request.getAttribute("lastname"); %>
+//byte[] avatar =(byte[])request.getAttribute("avatarPic");
+ String surname = (String) request.getAttribute("lastname"); 
+ String email = (String) request.getAttribute("email"); %>
 
 <p>Changing profile for<%=UserName%><p>
   <nav>
@@ -42,7 +43,8 @@ byte[] avatar =(byte[])request.getAttribute("avatarPic");
          	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
        		<p >Name: <input type="text" name="name" class="menu" value=<%=name%>> <p>
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>
-        	<p>Avarat</p> <input type="file" name="avatar" class="menu"  >
+        	<p>Email: <input type="text" name="email" class="menu" value=<%=email%>><p>
+        	<p>Avatar</p> <input type="file" name="avatar" class="menu"  >
         	
         	<input id="change2" type="submit" value="Save"><br/>
          	</form>

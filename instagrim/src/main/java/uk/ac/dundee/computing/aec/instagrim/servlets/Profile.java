@@ -58,8 +58,8 @@ public class Profile extends HttpServlet {
 		System.out.println("dohodit2345?");
 		
 		String args[] = Convertors.SplitRequestPath(request);
-		System.out.println(args[2]+"  "+args[1]+" "+args[0] + " argument");
-		if(args[2].equals("Settings")){changeProfile(request,response); }
+		if(args[2].equals("Settings")){
+			changeProfile(request,response); }
 		else{ 	
 			try {
 			 DisplayProfile(args[2], request, response);
@@ -84,7 +84,7 @@ public class Profile extends HttpServlet {
        	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
          request.setAttribute("firstname", name);
          request.setAttribute("lastname", surname);
-         request.setAttribute("email", email);
+         request.setAttribute("email", "email");
          try {
          	rd.forward(request, response);
     		} catch (ServletException | IOException e) {
@@ -96,7 +96,6 @@ public class Profile extends HttpServlet {
 	}
 	private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalStateException, ServletException
 	{	String type = "avatar";
-	System.out.println("bulkaaaaa");
 		  for (Part part : request.getParts()) {
 	            String filename = part.getName();
 	            
@@ -129,14 +128,13 @@ public class Profile extends HttpServlet {
 		User tm = new User();
         tm.setCluster(cluster);
 	    tm.getInfo(User);
-	    //Pic lsPics = pm.getAvatar(User);    
         String name=tm.getName();
         String surname=tm.getSurname();
-        String email=tm.getEmail();
        RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
         request.setAttribute("firstname", name);
         request.setAttribute("lastname", surname);
-        request.setAttribute("email",email );
+        request.setAttribute("pageUser", User);
+       // request.setAttribute("email",email );
         	try {
         		rd.forward(request, response);
         	}

@@ -40,7 +40,7 @@
           	   					   <input type="password" name="password" class="menu">  <br/>
                 </div>
               </div>
-               <div id="button">  <input type="submit" value="Login" id="button"> </div>>
+               <div id="button">  <input type="submit" value="Login" id="button"> </div>
               
             </form>
 

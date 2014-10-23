@@ -61,6 +61,11 @@ public final class Keyspaces {
                     + " PRIMARY KEY (picid,commentadded)"
                     + ")";
             
+            String likes= "CREATE TABLE if not exists instagrim.likes ("
+                    + " user varchar,\n"
+                    + " picid uuid,\n  "
+                    + " PRIMARY KEY (picid,user)"
+                    + ")";
             
             Session session = c.connect();
             try {
@@ -109,6 +114,12 @@ public final class Keyspaces {
             //Create comments
             try {
                 SimpleStatement cqlQuery = new SimpleStatement(Comments2);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create  " + et);
+            }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(likes);
                 session.execute(cqlQuery);
             } catch (Exception et) {
                 System.out.println("Can't create  " + et);

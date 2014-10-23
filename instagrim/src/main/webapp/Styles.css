@@ -14,7 +14,7 @@ nav {
     border: 2px;
   
 }
-##Rform
+#Rform
 {	
  position: relative;
  top: 20px;	
@@ -47,3 +47,35 @@ line-height: 163%;
 margin-top:10 px;
 position:relative;
 }
+
+
+/*image pages settings*/
+#photoMode
+{	
+ position: relative;
+ top: 20px;	
+ overflow: hidden;
+ 
+}
+#image
+{
+
+    float: left;
+	width:150px;
+	 
+}
+#comment
+{
+    float: left;
+	
+}
+#comm
+{
+  min-height: 150px;
+  max-height: 150px;
+  overflow-y: auto;
+  
+
+	}
+}
+
