@@ -19,8 +19,8 @@ if (lg != null) {
 String name = (String) request.getAttribute("firstname"); System.out.println(name+"wrong");
 //byte[] avatar =(byte[])request.getAttribute("avatarPic");
  String surname = (String) request.getAttribute("lastname"); 
- String email = (String) request.getAttribute("email"); %>
-<% String pageUserName =(String) request.getAttribute("pageUser");%>
+ String email = (String) request.getAttribute("email"); 
+ String pageUserName =(String) request.getAttribute("pageUser");%>
 
 <p>Changing profile for<%=UserName%><p>
   <nav>
@@ -43,9 +43,17 @@ String name = (String) request.getAttribute("firstname"); System.out.println(nam
        		<p >Name: <input type="text" name="name" class="menu" value=<%=name%>> <p>
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>
         	<p>Email: <input type="text" name="email" class="menu" value=<%=email%>><p>
-        	<p>Avatar</p> <input type="file" name="avatar" class="menu"  >
+        	<input type="hidden" id="thisField2" name="file2" value="1">
+        	<p>Avatar</p> <input type="file" id="file" name="avatar" class="menu"  >
         	
-        	<input id="change2" type="submit" value="Save"><br/>
+        	<input id="change2" type="submit" value="Save"  onclick="myFunction()"><br/>
+        	<script>
+        	function myFunction() {
+        	    alert("alert2");
+        	if(document.getElementById('file').value=='') {document.getElementById('thisField2').value="0" }
+        	else{ document.getElementById('thisField2').value="1"; alert("alert2");}
+        	}
+        	</script>
          	</form>
 
            

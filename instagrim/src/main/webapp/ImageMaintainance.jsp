@@ -12,7 +12,7 @@
     </head>
 <body>
 <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
-<%String uuid=(String)request.getAttribute("uuid");System.out.println("UUID"+uuid); %>
+<%String uuid=(String)request.getAttribute("uuid"); %>
 <%String pageUserName=(String)request.getAttribute("login"); %>
 <%String likes=(String)request.getAttribute("like"); %>
 <%  String UserName="guest";
@@ -58,33 +58,37 @@
 <form action="/Instagrim/ImageUp/<%=uuid%>" method="Get">
 <input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>>
  
- 
- 
+ <p>Adjust brightness(5 is current)</p></br>
+<input type="button" id="minus" name="minus" value="-" onclick="myFunction()">
+<input type="button" id="plus" name="plus"  value="+" onclick="myFunction1()">
+<input type="text" id="window" name="darkvalue" value="5" ></br>
+<input type="hidden" id="test" name="test" value="5">
  <script >
              function myFunction() {
 				 var wind=document.getElementById('window').value;
 				 if(wind>0)wind=wind-1;alert(wind);
-				 document.getElementById('window').value=wind ;
+				 document.getElementById('window').value=wind
+				 document.getElementById('test').value=wind;
             	 }
             	function myFunction1() {
 		 		var wind=document.getElementById('window').value;
 		 		if(wind<10)wind=(wind*1+1);alert(wind);
 				document.getElementById('window').value=wind ;
-		 
+				document.getElementById('test').value=wind
 }
              
 </script><noscript>Sorry, your browser does not support JavaScript!</noscript>
-<p>Adjust brightnes</p></br>
-<input type="button" id="minus" name="minus" value="-" onclick="myFunction()">
-<input type="text" id="window" name="wind2" value="5" disabled>
-<input type="button" id="plus" name="plus"  value="+" onclick="myFunction1()"><br>
 
 
-<input type="radio" name="radio" value="bnw">Black'n'White<br>
-<input type="radio" name="radio" value="serpia">Serpia<br>
-<input type="radio" name="radio" value="none" checked>None<br>
-<input type="submit" value="Update"> </form>
+<input type="radio" name="radio1" value="bnw">Black'n'White<br>
+<input type="radio" name="radio1" value="serpia">Serpia<br>
+<input type="radio" name="radio1" value="none" checked>None<br>
+<input type="submit" value="Update">
+
+ </form>
 </br>
+
+<
 
 <form action="/Instagrim/ImageDel/<%=uuid%>" method="Get">
 <input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>> <input type="submit" value="Delete"> </form>

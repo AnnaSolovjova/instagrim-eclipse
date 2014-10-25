@@ -17,10 +17,10 @@ LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
 if (lg != null) {
  UserName = lg.getUsername();}
 String name = (String) request.getAttribute("firstname"); 
-//String email = (String) request.getAttribute("email");%>   
-<% String surname = (String) request.getAttribute("lastname"); %>
-<% Pic lsPics = (Pic) request.getAttribute("Pics");%>
-<% String pageUserName =(String) request.getAttribute("pageUser");%>
+String email =  (String) request.getAttribute("email"); 
+String surname = (String) request.getAttribute("lastname"); 
+Pic lsPics = (Pic) request.getAttribute("Pics");
+String pageUserName =(String) request.getAttribute("pageUser");%>
 <p>Hello <%=UserName%></p>
 <p>This is <%=pageUserName %> Profile</p>
   <nav>
@@ -37,7 +37,7 @@ String name = (String) request.getAttribute("firstname");
          	<p>Avatar</p><p><image src="/Instagrim/Avatar/<%=pageUserName%>" height=120px width=120px></p>
        		<p>Name: <%=name%> </p> <input type="hidden" id="thisField1" name="name" value=<%=name%>>
         	<p>Surname: <%=surname%></p> <input type="hidden" id="thisField2" name="surname" value=<%=surname%>>
-        	<p>Email: <%=name%> </p> <input type="hidden" id="thisField3" name="email" value=<%=name%>><br/>
+        	<p>Email: <%=email%> </p> <input type="hidden" id="thisField3" name="email" value=<%=email%>><br/>
         	<%if(pageUserName.equals(UserName)){%>
             <input type="submit" value="Change Information"> 
        		<%}%>

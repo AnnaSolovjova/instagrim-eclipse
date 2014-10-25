@@ -46,8 +46,11 @@
                     <li>PasswordRepeat </li>
                     <li>Name </li>
                     <li>Surname</li>
-                    <li>email </li>
-                    <li>addresses </li>
+                    <li>email </li></br>
+                    
+                    <li>Street</li>
+                    <li>City</li>
+                    <li>PostCode</li>
                 
                  </ul></div>
                    <div id="inputW">
@@ -56,8 +59,12 @@
                     <input type="password" name="password2" class="menu" id="pass2" onchange=myFunction3() > <br/>
                     <input type="text" name="name" class="menu" id="3"> <br/>
                     <input type="text" name="surname" class="menu" id="4"> <br/>
-                    <input type="text" name="email" class="menu" id="5"> <br/>
-                    <input type="text" name="addresses" class="menu" id="6"> <br/>
+                    <input type="text" name="email2" class="menu" id="5"> <br/>
+                    <br/>
+                    <input type="text" name="street" class="menu" id="6"> <br/>
+                    <input type="text" name="city" class="menu" id="7"> <br/>
+                    <input type="text" name="post" class="menu" id="9"> <br/>
+                    
                	   </div>
           
              </div>
@@ -80,7 +87,7 @@
 		 	
 		 		var pass=document.getElementById('pass');
 		 		var pass2=document.getElementById('pass2');
-		 		if(pass!=pass2){
+		 		if(!pass.equals(pass2)){
 		 		document.getElementById('notification').innerHTML = 'Passwords are different';}
 		 
 	     	}

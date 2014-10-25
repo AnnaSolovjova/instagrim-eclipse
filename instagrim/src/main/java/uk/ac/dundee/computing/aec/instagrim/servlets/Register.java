@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ 		* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -60,14 +61,19 @@ public class Register extends HttpServlet {
         String password2=request.getParameter("password2");
         String name=request.getParameter("name");
         String surname=request.getParameter("surname");
-        String email=request.getParameter("email");
-        String addresses=request.getParameter("addresses");
-        checkIfAll(username,password,password,name,surname,email,addresses,response);
+        String email2=request.getParameter("email2");
+        String street=request.getParameter("street");
+        String city=request.getParameter("city");
+        String country=request.getParameter("country");
+        String post=request.getParameter("post");
+        checkIfAll(username,password,password,name,surname,email2,response);
         checkIfSame(password,password2,response);
         User us=new User();
         us.setCluster(cluster);
-        System.out.println("mandarin2");
-        boolean success=us.RegisterUser(username, password,name,surname,email,addresses);
+       
+        
+        
+        boolean success=us.RegisterUser(username, password,name,surname,email2,street,city,post);
         
         if(success==true) 
         {
@@ -86,21 +92,22 @@ public class Register extends HttpServlet {
         
     }
     //validate input
-    private void checkIfAll(String username,String password,String password2,String name,String surname,String email,String adresses,HttpServletResponse response) throws ServletException, IOException
+    private boolean checkIfAll(String username,String password,String password2,String name,String surname,String email,HttpServletResponse response) throws ServletException, IOException
     {
-    	if(""!=username&&""!=password&&""!=password2&&""!=name&&""!=surname&&""!=email&&""!=adresses)
-    	{
+    	if(""!=username&&""!=password&&""!=password2&&""!=name&&""!=surname&&""!=email)
+    	{return true;
     	}
     	else{
     		error("You need to fill all the fields", response);
+    		return false;
     	}
     }
 
-    private void checkIfSame(String p1,String p2, HttpServletResponse response) throws ServletException, IOException
+    private boolean checkIfSame(String p1,String p2, HttpServletResponse response) throws ServletException, IOException
     {
     	if(!p1.equals(p2)){
-    		error("Passwords are different", response);
-    	}
+    		error("Passwords are different", response);return false;
+    	}return true;
     		
     }
     private void checkRightLength(String p1,String login, HttpServletResponse response) throws ServletException, IOException

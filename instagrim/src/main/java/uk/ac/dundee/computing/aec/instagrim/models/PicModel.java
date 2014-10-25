@@ -231,15 +231,14 @@ public void deletePic(String picid)
    }
    
    public static BufferedImage dark(BufferedImage img, int scale) {
-	   float scaleFactor = .9f;
+	   float scaleFactor = 0.9f-((scale)/10);
 	   RescaleOp op = new RescaleOp(scaleFactor, 0, null);
 	   img = op.filter(img, null);
 	   return img;
    }
    //taken from http://exampledepot.8waytrips.com/egs/java.awt.image/Bright.html
    public static BufferedImage light(BufferedImage img,int scale) {
-	// Brighten the image by 30%
-	   float scaleFactor = 1.3f;
+	   float scaleFactor = 1.0f+(scale/5);
 	   RescaleOp op = new RescaleOp(scaleFactor, 0, null);
 	   img = op.filter(img, null);
 	   return img;
@@ -434,12 +433,12 @@ public void deletePic(String picid)
  
     
     public BufferedImage updatePic(BufferedImage newPic,String effect,int darkness) throws IOException
-    {	System.out.println("EFFECT2"+effect);
+    {	
     	if(effect.equals("bnw"))
     	{newPic=grey(newPic);}
-    	else if(effect.equals("serpia")){newPic=serpia(newPic,20);System.out.println("SERPIA"+effect);}
+    	else if(effect.equals("serpia")){newPic=serpia(newPic,20);}
     	if(darkness<5){for(int i=0;i<10;i++){newPic=light(newPic,darkness);};
-    	}else if(darkness>5){for(int i=0;i<10;i++){newPic=dark(newPic,darkness);}}
+    	}else if(darkness>5){newPic=dark(newPic,darkness);System.out.println("EFFECT2"+darkness);}
     	
     return newPic;
     }
@@ -451,7 +450,7 @@ public java.util.LinkedList<Pic> getRandom()
 {
 	  java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
       Session session = cluster.connect("instagrim");
-      PreparedStatement ps = session.prepare("select * from userpiclist LIMIT 6");
+      PreparedStatement ps = session.prepare("select * from userpiclist ");
       ResultSet rs = null;
       BoundStatement boundStatement = new BoundStatement(ps);
       rs = session.execute(
@@ -460,7 +459,10 @@ public java.util.LinkedList<Pic> getRandom()
           System.out.println("No Images returned");
           return null;
       } else {
-          for (Row row : rs) {  
+    	  int i=0;
+          for (Row row : rs) {
+        	  i++;
+        	  if(i<=6){
               String user=row.getString("user");
               java.util.UUID UUID = row.getUUID("picid"); 
               Pic pic = new Pic();
@@ -468,7 +470,7 @@ public java.util.LinkedList<Pic> getRandom()
               pic.setUser(user);
               Pics.add(pic);
 
-              
+        	  }
               
               
           }

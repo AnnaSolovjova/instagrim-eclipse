@@ -136,10 +136,12 @@ public class Image extends HttpServlet {
                 break;
                 
             case 6:
-            //	int dark=Integer.parseInt(request.getParameter("wind"));
-            	String effect=request.getParameter("radio");
+            	
+            	String effect=request.getParameter("radio1");
             	login=request.getParameter("login");
-            	updatePic(args[2],response,effect,5);
+            	String test=request.getParameter("test");
+            	int dark=Integer.parseInt(test);
+            	updatePic(args[2],response,effect,dark);
             	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
                 rd2.forward(request, response);
                 break;
