@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import com.datastax.driver.core.Cluster;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
+import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
@@ -50,7 +51,6 @@ public class Avatar extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
     private void DisplayAvatar(HttpServletResponse response,String User) throws ServletException, IOException {
-        
     	PicModel tm = new PicModel();
         tm.setCluster(cluster);
   
@@ -71,13 +71,9 @@ public class Avatar extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	HttpSession session=request.getSession();
-    	LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
-        String UserName="majed";
-        if (lg.getlogedin()){
-            UserName=lg.getUsername();
-        }
-    	DisplayAvatar(response,UserName);
+    	 String args[] = Convertors.SplitRequestPath(request);
+    	 
+    	DisplayAvatar(response,args[2]);
         
         
     }

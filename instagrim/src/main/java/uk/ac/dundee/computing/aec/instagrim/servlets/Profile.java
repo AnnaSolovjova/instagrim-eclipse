@@ -55,11 +55,10 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("dohodit2345?");
-		
 		String args[] = Convertors.SplitRequestPath(request);
+		
 		if(args[2].equals("Settings")){
-			changeProfile(request,response); }
+			changeProfile(request,response); System.out.println("!!!!");}
 		else{ 	
 			try {
 			 DisplayProfile(args[2], request, response);
@@ -84,6 +83,7 @@ public class Profile extends HttpServlet {
        	 RequestDispatcher rd=request.getRequestDispatcher("/UserProfile.jsp");
          request.setAttribute("firstname", name);
          request.setAttribute("lastname", surname);
+         request.setAttribute("pageUser",login);
          request.setAttribute("email", "email");
          try {
          	rd.forward(request, response);
@@ -96,7 +96,8 @@ public class Profile extends HttpServlet {
 	}
 	private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalStateException, ServletException
 	{	String type = "avatar";
-		  for (Part part : request.getParts()) {
+	 	if(request.getParts()!=null){
+		for (Part part : request.getParts()) {
 	            String filename = part.getName();
 	            
 	            InputStream is = request.getPart(part.getName()).getInputStream();
@@ -117,6 +118,7 @@ public class Profile extends HttpServlet {
 	                is.close();
 	            }
 		  }
+	 	}
 	}
 	
 	
@@ -128,12 +130,14 @@ public class Profile extends HttpServlet {
 		User tm = new User();
         tm.setCluster(cluster);
 	    tm.getInfo(User);
+	    System.out.println("TTTT");
         String name=tm.getName();
         String surname=tm.getSurname();
-       RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/UserProfile.jsp");
         request.setAttribute("firstname", name);
         request.setAttribute("lastname", surname);
         request.setAttribute("pageUser", User);
+        System.out.println("USER"+User);
        // request.setAttribute("email",email );
         	try {
         		rd.forward(request, response);
@@ -146,7 +150,7 @@ public class Profile extends HttpServlet {
 	
 	private void changeProfile(HttpServletRequest request, HttpServletResponse response)
 	{
-		 
+		 System.out.println("!!!!");
 		 String name=request.getParameter("name");
 	     String surname=request.getParameter("surname");
 	     String login=request.getParameter("login");
@@ -154,7 +158,7 @@ public class Profile extends HttpServlet {
 	     RequestDispatcher rd=request.getRequestDispatcher("/ChangeProfileInfo.jsp");
 	     request.setAttribute("firstname", name);
 	     request.setAttribute("lastname", surname);
-	     //request.setAttribute("UserName", login);
+	     request.setAttribute("pageUser", login);
 	     try {
 	    	 
 	     	rd.forward(request, response);

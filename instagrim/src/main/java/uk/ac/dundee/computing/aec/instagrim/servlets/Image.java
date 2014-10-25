@@ -56,6 +56,7 @@ public class Image extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Cluster cluster;
     private HashMap CommandsMap = new HashMap();
+  
     
     
 
@@ -92,7 +93,7 @@ public class Image extends HttpServlet {
             command = (Integer) CommandsMap.get(args[1]);
           
         } catch (Exception et) {
-            error("Bad Operator", response);
+            error("Bad Ocoperator", response);
             return;
         }
       
@@ -105,6 +106,7 @@ public class Image extends HttpServlet {
                 
                 break;
             case 3:
+            	
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 
                 break;
@@ -134,10 +136,11 @@ public class Image extends HttpServlet {
                 break;
                 
             case 6:
-              	
-            	updatePic(args[2],response);
+            //	int dark=Integer.parseInt(request.getParameter("wind"));
+            	String effect=request.getParameter("radio");
             	login=request.getParameter("login");
-            	         	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
+            	updatePic(args[2],response,effect,5);
+            	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
                 rd2.forward(request, response);
                 break;
             case 7:
@@ -152,10 +155,10 @@ public class Image extends HttpServlet {
                     username=lg.getUsername();
                 }                
             	m2.insertComment(args[2], comment, username);
-            	RequestDispatcher rd3 = request.getRequestDispatcher("/ImageEditMode/"+login2+"/"+args[2]);
-            	rd3.forward(request, response);
+            	response.sendRedirect("/Instagrim/ImageEditMode/"+login2+"/"+args[2]);
             	break;
             case 8:
+            	System.out.println("LIKE"+args[2]);
             	MultimediaModel m4=new MultimediaModel();
             	m4.setCluster(cluster);
             	String login3=request.getParameter("log");
@@ -163,12 +166,12 @@ public class Image extends HttpServlet {
             	LoggedIn lg2= (LoggedIn)session2.getAttribute("LoggedIn");
                 String username2="majed";
                 if (lg2.getlogedin()){
-                    username=lg2.getUsername();
-                }               
+                    username2=lg2.getUsername();
+                }    
+                System.out.println();
                 m4.insertLikes(username2,args[2]);
-            	RequestDispatcher rd4 = request.getRequestDispatcher("/ImageEditMode/"+login3+"/"+args[2]);
-            	rd4.forward(request, response);
-            	
+                response.sendRedirect("/Instagrim/ImageEditMode/"+login3+"/"+args[2]);
+            	//rd4.forward(request, response);           	
             	break;
             default:
                 error("Bad Operator", response);
@@ -178,7 +181,11 @@ public class Image extends HttpServlet {
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
+        java.util.LinkedList<Pic> lsPics=null;
+        if(!User.equals("majed")){
+        lsPics = tm.getPicsForUser(User);
+        }
+        else{lsPics=tm.getRandom();}
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
         request.setAttribute("Pics", lsPics);
         request.setAttribute("login", User);
@@ -243,16 +250,11 @@ public class Image extends HttpServlet {
     	pm.setCluster(cluster);
     	pm.deletePic(picid);
     }
-    private void updatePic(String picid, HttpServletResponse response) throws IOException
+    private void updatePic(String picid, HttpServletResponse response,String effect,int dark) throws IOException
     {	
-    	
     	PicModel pm =new PicModel();
     	pm.setCluster(cluster);
-    	Pic p = pm.getPic(1,java.util.UUID.fromString(picid));
-        InputStream in = new ByteArrayInputStream(p.getBytes());
-    	BufferedImage bImageFromConvert = ImageIO.read(in);
-    	
-    	pm.updatePic(bImageFromConvert,picid);
+    	pm.getPicForModification(java.util.UUID.fromString(picid),effect,dark);
     	
     }
 

@@ -25,6 +25,8 @@ public class MultimediaModel {
 	 public java.util.LinkedList<Comment> getComentsForPic(String picid) {
 	        java.util.LinkedList<Comment> CommentList = new java.util.LinkedList<>();
 	        Session session = cluster.connect("instagrim");
+	        
+	        System.out.println("PICID" + picid);
 	        PreparedStatement ps = session.prepare("select text,user from comments2 where picid =?  ALLOW FILTERING");
 	        ResultSet rs = null;
 	        BoundStatement boundStatement = new BoundStatement(ps);
@@ -79,16 +81,17 @@ public void insertLikes(String user,String picid)
 public int countLikes(String picid)
 {
 	 Session session = cluster.connect("instagrim");
-	 PreparedStatement psInsertPic = session.prepare("select user from likes where picid=? ALLOW FILTERING");
+	 PreparedStatement psInsertPic = session.prepare("select user from likes where picid=?");// where picid=? ALLOW FILTERING");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
-     ResultSet rs= session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid) ));
+     ResultSet rs= session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)) );
      int count=0;
      if (rs.isExhausted()) {
          return 0;
      } else {
          for (Row row : rs) {
            count++;
-         }
+           System.out.println("COUNT2"+count);
+         } 
       return count;   
      }
      

@@ -20,6 +20,7 @@ String name = (String) request.getAttribute("firstname"); System.out.println(nam
 //byte[] avatar =(byte[])request.getAttribute("avatarPic");
  String surname = (String) request.getAttribute("lastname"); 
  String email = (String) request.getAttribute("email"); %>
+<% String pageUserName =(String) request.getAttribute("pageUser");%>
 
 <p>Changing profile for<%=UserName%><p>
   <nav>
@@ -33,14 +34,12 @@ String name = (String) request.getAttribute("firstname"); System.out.println(nam
    <% 
          
          
-            if (name == null) {
+        
         %>
-        	<p>Error</p>
-        <%
-        	} else{
-        %>	
-         	<form enctype="multipart/form-data" action="/Instagrim/Profile/<%=UserName%>" method="Post">
-         	<input type="hidden" id="thisField1" name="login" value=<%=UserName%>>
+      
+	
+         	<form enctype="multipart/form-data" action="/Instagrim/Profile/<%=pageUserName%>" method="Post">
+         	<input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>>
        		<p >Name: <input type="text" name="name" class="menu" value=<%=name%>> <p>
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>
         	<p>Email: <input type="text" name="email" class="menu" value=<%=email%>><p>
@@ -49,8 +48,7 @@ String name = (String) request.getAttribute("firstname"); System.out.println(nam
         	<input id="change2" type="submit" value="Save"><br/>
          	</form>
 
-          <% } %>
-            
+           
          
        
 </body>

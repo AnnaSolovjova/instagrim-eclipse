@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
@@ -36,7 +37,7 @@ public class User {
     Cluster cluster;
     String name="";
     String surname="";
-    String email="";
+    String[]email=null;
     byte[] avatar=null;
     public User(){
         
@@ -59,16 +60,18 @@ public class User {
         {
         	return false;
         }
-       
+       Set <String> email=null;
+       email.add(Email);
+       System.out.println(email);
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,email) Values(?,?,?,?,?)");
         BoundStatement boundStatement = new BoundStatement(ps);
-        Email="{'f@baggins.com', 'baggins@gmail.com'}";
+        
         // PreparedStatement ps2 = session.prepare("update userprofiles SET email+=? where login= ? ");
          //BoundStatement boundStatement2 = new BoundStatement(ps2);
         	try{
         		System.out.println("tri");
-        		session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname,Email));
+        		session.execute( boundStatement.bind(username,EncodedPassword,Name,Surname,email));
         		//session.execute( boundStatement2.bind(Email,username));
         	}catch(Exception e)
         	{
@@ -129,8 +132,8 @@ public class User {
         	  System.out.println("row"+row);
         	    name = row.getString("first_name");
                 surname = row.getString("last_name");
-               email = row.getString("email");
-               System.out.println("EMAIL"+email);
+                Set<String>emailset = row.getSet("email", String.class);
+                email=emailset.toArray(new String[emailset.size()]);
                
                 
                }
@@ -144,9 +147,9 @@ public class User {
      public String getSurname(){
      return surname;
      }
-     public String getEmail(){
+     public String[] getEmail(){
          return email;
-         }
+       }
      
     
      
@@ -193,6 +196,22 @@ public class User {
             
            	}
      }
+     
+     public boolean userExists(String user)
+     {
+    	 
+    	 Session session = cluster.connect("instagrim");
+         PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
+         ResultSet rs = null;
+         BoundStatement boundStatement = new BoundStatement(ps);
+         rs = session.execute( boundStatement.bind( user));
+         if (rs.isExhausted()) {
+             return false;
+         } else {
+        	 return true;
+         }
+     }
+     
     	}
       	 
    	 

@@ -35,7 +35,9 @@
        
         <article>
             <h3>Register as user</h3>
+            
          <form method="POST"  action="Register">
+       <font color="red">  <p id="notification"></p></font>
             <div id="Rform">
            <%if (status=="1"){ %><p>Couldn't register the user.</p> <%} %>
                 <div id="tags"><ul>
@@ -51,7 +53,7 @@
                    <div id="inputW">
                     <input type="text" name="username" class="menu" id="login" onchange="myFunction2()"><br/>
                     <input type="password" name="password" class="menu" id="pass" onchange="myFunction()"> <br/>
-                    <input type="password" name="password" class="menu" id="pass2" onchange=myFunction() > <br/>
+                    <input type="password" name="password2" class="menu" id="pass2" onchange=myFunction3() > <br/>
                     <input type="text" name="name" class="menu" id="3"> <br/>
                     <input type="text" name="surname" class="menu" id="4"> <br/>
                     <input type="text" name="email" class="menu" id="5"> <br/>
@@ -59,34 +61,38 @@
                	   </div>
           
              </div>
+             
              <script >
              function myFunction() {
-				 
 				 var password=document.getElementById('pass');
-				 if(password.length<5||password.length>10){alert("Password should be 5 to 10 chatacters");
+				 if(password.value.length<5||password.value.length>10){
+				 document.getElementById('notification').innerHTML = 'Password should be 5 to 10 chatacters';
+				 
 				     }
              }
-             function myFunction2() {
-			 	
+             function myFunction2() {	
 			 	var login=document.getElementById('login');
-			 	if(login.length<3||login.length>10){alert("Login should be 3 to 10 chatacters");}
+			 	if(login.value.length<3||login.value.length>10){
+			 	document.getElementById('notification').innerHTML = 'Login should be 3 to 10 chatacters';}
 			 
 		     }
              function myFunction3() {
-        	 	var password=document.getElementById('pass');
-        	 	var password2=document.getElementById('pass2');
-		 		var login=document.getElementById('login');
-		 		if(login.length<3||login.length>10){window.location.href = "register.jsp";}
-		 		if(password.length<5||password.length>10){window.location.href = "register.jsp";}
-		 		if(!password.eq(password2)){window.location.href = "register.jsp";}
-             }
+		 	
+		 		var pass=document.getElementById('pass');
+		 		var pass2=document.getElementById('pass2');
+		 		if(pass!=pass2){
+		 		document.getElementById('notification').innerHTML = 'Passwords are different';}
+		 
+	     	}
+             
+             
 	     
 			</script>
             <noscript>Sorry, your browser does not support JavaScript!</noscript>
              </br>
           
 			
-              </div>    <div id="button"> <input type="submit" value="Register" id="registerB" onclick="myFunction3()" disabled>
+              </div>    <div id="button"> <input type="submit" value="Register" id="registerB" ">
              
             </form>
 

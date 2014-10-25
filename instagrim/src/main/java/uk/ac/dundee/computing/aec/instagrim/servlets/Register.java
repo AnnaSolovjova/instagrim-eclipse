@@ -55,14 +55,15 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	 System.out.println("mandarin12");
         String username=request.getParameter("username");
         String password=request.getParameter("password");
+        String password2=request.getParameter("password2");
         String name=request.getParameter("name");
         String surname=request.getParameter("surname");
         String email=request.getParameter("email");
         String addresses=request.getParameter("addresses");
-        
+        checkIfAll(username,password,password,name,surname,email,addresses,response);
+        checkIfSame(password,password2,response);
         User us=new User();
         us.setCluster(cluster);
         System.out.println("mandarin2");
@@ -70,16 +71,12 @@ public class Register extends HttpServlet {
         
         if(success==true) 
         {
-        	System.out.println("odin");
         uploadAvatar(username);
         RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
-        request.setAttribute("status", "0");
         rd.forward(request,response);
         }
         else{
-        	System.out.println("dva");
         RequestDispatcher rd=request.getRequestDispatcher("register.jsp");
-        request.setAttribute("status", "1");
         rd.forward(request,response);
         
         }
@@ -87,6 +84,29 @@ public class Register extends HttpServlet {
        
         
         
+    }
+    //validate input
+    private void checkIfAll(String username,String password,String password2,String name,String surname,String email,String adresses,HttpServletResponse response) throws ServletException, IOException
+    {
+    	if(""!=username&&""!=password&&""!=password2&&""!=name&&""!=surname&&""!=email&&""!=adresses)
+    	{
+    	}
+    	else{
+    		error("You need to fill all the fields", response);
+    	}
+    }
+
+    private void checkIfSame(String p1,String p2, HttpServletResponse response) throws ServletException, IOException
+    {
+    	if(!p1.equals(p2)){
+    		error("Passwords are different", response);
+    	}
+    		
+    }
+    private void checkRightLength(String p1,String login, HttpServletResponse response) throws ServletException, IOException
+    {
+    	if(login.length()<3||login.length()>10||p1.length()<5||p1.length()<10){
+    		error("The length of password is wrong(5-10) or length of login is wrong(3-10)", response);}	
     }
     
     public void uploadAvatar(String username) throws IOException
@@ -108,8 +128,17 @@ public class Register extends HttpServlet {
               
           
     }
-    
-    
+    //displays error message
+    private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
+
+        PrintWriter out = null;
+        out = new PrintWriter(response.getOutputStream());
+        out.println("<h1>You have an a error in your input</h1>");
+        out.println("<h2>" + mess + "</h2>");
+        out.println("<a href=\"register.jsp\">Back</a>");
+        out.close();
+        return;
+    }
     /**
      * Returns a short description of the servlet.
      *

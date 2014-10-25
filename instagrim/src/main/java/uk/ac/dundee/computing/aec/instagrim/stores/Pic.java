@@ -18,6 +18,7 @@ public class Pic {
     private int length;
     private String type;
     private java.util.UUID UUID=null;
+    private String user;
     
     public void Pic() {
 
@@ -56,5 +57,15 @@ public class Pic {
         byte image[] = pic;
        
     }
-
+    public void  setUser(String user) {
+        
+        this.user=user;
+       
+    }
+	
+    public String  getUser() {
+        
+        return user;
+       
+    }
 }

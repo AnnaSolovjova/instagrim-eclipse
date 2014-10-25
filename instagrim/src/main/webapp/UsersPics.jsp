@@ -10,12 +10,17 @@
 <!DOCTYPE html>
 <html>
     <head>
+    
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="/Instagrim/Styles.css" />
+        <title>UserPictures</title>
+        
     </head>
     <body>
-       <%String login=(String)request.getAttribute("login"); %>
+       <%String pageUserName=(String)request.getAttribute("login");
+       String UserName="guest";
+		LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
+		if (lg != null) {
+ 		UserName = lg.getUsername();} %>
         <header>
         
         <h1>InstaGrim ! </h1>
@@ -26,11 +31,12 @@
             <ul>
                 <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
                 <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
+                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
             </ul>
         </nav>
  
         <article>
-            <h1>Your Pics</h1>
+            <h1><%=pageUserName%> Pictures</h1>
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
@@ -45,11 +51,12 @@
                 System.out.println(p.getSUUID());
 
         %>
-       <a href="/Instagrim/ImageEditMode/<%=login%>/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
-
-            }
-            }
-        %>
+        <%if(pageUserName.equals("majed")){%>
+        <a href="/Instagrim/Profile/<%=p.getUser()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
+        <% }
+        else{%>
+       <a href="/Instagrim/ImageEditMode/<%=pageUserName%>/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
+       <br/><%}}}%>
         </article>
         <footer>
             <ul>
