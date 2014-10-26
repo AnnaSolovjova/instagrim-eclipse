@@ -87,7 +87,6 @@ public class Register extends HttpServlet {
         
         }
         
-       
         
         
     }
@@ -117,10 +116,10 @@ public class Register extends HttpServlet {
     }
     
     public void uploadAvatar(String username) throws IOException
-    {
+    {			
               String type = "avatar";
               String filename = "";
-            		  InputStream is = new FileInputStream(new File("C:\\Users\\Anna\\Desktop\\images.jpg"));
+            		  InputStream is = Register.class.getResourceAsStream("\\images\\images.jpg");
               System.out.println(is+"ajajaj");
               int i = is.available();
               if (i > 0) {

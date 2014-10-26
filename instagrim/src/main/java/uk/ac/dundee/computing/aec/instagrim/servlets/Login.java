@@ -94,6 +94,8 @@ public class Login extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    
 public void dropTable(){
 	 Session session = cluster.connect("instagrim");
 	  PreparedStatement ps,ps2,ps3,ps4,ps5,ps6,ps7,ps8,ps9;

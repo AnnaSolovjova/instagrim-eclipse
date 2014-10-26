@@ -96,34 +96,7 @@ public class User {
     }
     
     public boolean IsValidUser(String username, String Password,String type){
-    	Session session = cluster.connect("instagrim");
-  	  PreparedStatement ps,ps2,ps3,ps4,ps5,ps6,ps7,ps8,ps9;
-  	  ps = session.prepare("DROP TABLE Pics");
-  	  ps2 =session.prepare("DROP TABLE userpiclist");
-  	  ps3 =session.prepare("DROP TABLE address");
-  	  ps4 =session.prepare("DROP TABLE userprofiles");
-  	  ps5 =session.prepare("DROP TABLE comments2");
-  	  ps6 =session.prepare("DROP TABLE likes");
-  	  ps7 =session.prepare("DROP TABLE comments");
-        BoundStatement boundStatement = new BoundStatement(ps);
-        BoundStatement boundStatement2 = new BoundStatement(ps2);
-        BoundStatement boundStatement3= new BoundStatement(ps3);
-        BoundStatement boundStatement4 = new BoundStatement(ps4);
-        BoundStatement boundStatement5 = new BoundStatement(ps5);
-        BoundStatement boundStatement6 = new BoundStatement(ps6);
-        BoundStatement boundStatement7 = new BoundStatement(ps7);
-        session.execute( boundStatement.bind());
-        session.execute( boundStatement2.bind());
-        session.execute( boundStatement3.bind());
-        session.execute( boundStatement4.bind());
-        session.execute( boundStatement5.bind());
-        session.execute( boundStatement6.bind());
-        session.execute( boundStatement7.bind());
-    	
-    	
-    	
-    	
-    	
+    		
     	AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
         String EncodedPassword=null;
         try {
@@ -149,7 +122,7 @@ public class User {
         }
    
      
-    return false;  
+    return false; 
     }
     
     
@@ -259,6 +232,13 @@ public class User {
          } else {
         	 return true;
          }
+     }
+     public void deleteUser(String login)
+     {
+    	 Session session = cluster.connect("instagrim");
+    	    PreparedStatement psInsertPic = session.prepare("delete from userprofiles where login=?");
+    	     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+    	    session.execute(bsInsertPic.bind(java.util.UUID.fromString(login)));
      }
      
     	}

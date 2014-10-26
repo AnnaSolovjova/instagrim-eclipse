@@ -31,10 +31,37 @@
                             String UserName = lg.getUsername();
                             if (lg.getlogedin()) {
                     %>
-
+				
                 <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
                 <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
+                <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>" id="delete" onclick="deleteUser()" >Delete user</a></li>
                 <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+                <input type=hidden id="user" value=<%=lg.getUsername() %>>
+					<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                <script>
+
+                function deleteUser () {
+
+                    jQuery.ajax({
+                        type: "DELETE",
+                        url: "http://localhost:8080/Instagrim/Profile",
+                        data: "text",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (data, status, jqXHR) {
+                             alert("yay");
+                        },
+                    
+                        error: function (jqXHR, status) {            
+                            alert("nay");// error handler
+                        }
+
+                    });
+               }
+									
+								    	
+                    
+				</script>
                     <%}
                             }else{
                                 %>

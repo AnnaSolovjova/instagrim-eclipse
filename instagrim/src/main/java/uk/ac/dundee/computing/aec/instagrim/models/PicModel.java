@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -115,6 +116,32 @@ public void deletePic(String picid)
     	BoundStatement boundStatement2 = new BoundStatement(ps2);
      rs = session.execute( boundStatement.bind(java.util.UUID.fromString(picid)));
      rs2 = session.execute( boundStatement2.bind(java.util.UUID.fromString(picid)));
+  
+    
+}
+
+public void deleteAllPic(String user)
+{
+	ResultSet rs,rs2 = null;
+	java.util.LinkedList<Pic> picList= getPicsForUser(user);
+	 Session session = cluster.connect("instagrim");
+	 if (picList == null) {
+	        } else {
+	            Iterator<Pic> iterator;
+	            iterator = picList.iterator();
+	            while (iterator.hasNext()) {
+	                Pic p = (Pic) iterator.next();
+	                PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
+	                BoundStatement boundStatement2 = new BoundStatement(ps2);
+	                rs2 = session.execute( boundStatement2.bind(p.getSUUID()));   
+	            } }
+	            
+	 
+     PreparedStatement ps = session.prepare("delete from userpiclist where user =?");
+     BoundStatement boundStatement = new BoundStatement(ps);
+     rs = session.execute( boundStatement.bind(user));
+  
+  
   
     
 }

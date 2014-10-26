@@ -67,6 +67,12 @@ public class Profile extends HttpServlet {
 	        }}
 	}
 
+	
+	protected void doDelere(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("DELETE");
+	}
+
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */

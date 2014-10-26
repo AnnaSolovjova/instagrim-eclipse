@@ -96,5 +96,13 @@ public int countLikes(String picid)
      }
      
 }
+public void deleteLikes(String picid)
+{
+	Session session = cluster.connect("instagrim");
+    PreparedStatement psInsertPic = session.prepare("delete from likes where picid=?");
+     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+    session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)));
+}
+
 }
 

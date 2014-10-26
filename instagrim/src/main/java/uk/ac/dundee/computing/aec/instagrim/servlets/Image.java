@@ -130,6 +130,7 @@ public class Image extends HttpServlet {
             	m3.setCluster(cluster);
             	deletePic(args[2]);
             	m3.deleteComment(args[2]);
+            	m3.deleteLikes(args[2]);
             	login=request.getParameter("login");
             	RequestDispatcher rd1 = request.getRequestDispatcher("/Images/"+login);
                 rd1.forward(request, response);
