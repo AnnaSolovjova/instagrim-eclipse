@@ -27,6 +27,7 @@ import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
 import uk.ac.dundee.computing.aec.instagrim.models.MultimediaModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
+import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.Comment;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
@@ -111,76 +112,89 @@ public class Image extends HttpServlet {
                 
                 break;
             case 4:
-            	MultimediaModel m=new MultimediaModel();
-            	m.setCluster(cluster);
-            	java.util.LinkedList<Comment> lsComment = m.getComentsForPic(args[3]); 
-            	int count=m.countLikes(args[3]);
-            	String count2=Integer.toString(count);
-            	System.out.println(count+"COUNT");
-            	RequestDispatcher rd = request.getRequestDispatcher("/ImageMaintainance.jsp");
-                request.setAttribute("uuid", args[3]);
-                request.setAttribute("login", args[2]);
-                request.setAttribute("Comment", lsComment);
-                request.setAttribute("like", count2);
-                rd.forward(request, response); 
+            	ImageEditMode(request,response,args);
                 break;
                 
             case 5:
-            	MultimediaModel m3=new MultimediaModel();
-            	m3.setCluster(cluster);
-            	deletePic(args[2]);
-            	m3.deleteComment(args[2]);
-            	m3.deleteLikes(args[2]);
-            	login=request.getParameter("login");
-            	RequestDispatcher rd1 = request.getRequestDispatcher("/Images/"+login);
-                rd1.forward(request, response);
+            	deletePic(request,response,args);
                 break;
                 
             case 6:
-            	
-            	String effect=request.getParameter("radio1");
-            	login=request.getParameter("login");
-            	String test=request.getParameter("test");
-            	int dark=Integer.parseInt(test);
-            	updatePic(args[2],response,effect,dark);
-            	RequestDispatcher rd2 = request.getRequestDispatcher("/Images/"+login);
-                rd2.forward(request, response);
+            	ImageUpload(request,response,args);
                 break;
             case 7:
-            	MultimediaModel m2=new MultimediaModel();
-            	m2.setCluster(cluster);
-            	String comment=request.getParameter("comment");
-            	String login2=request.getParameter("log");
-            	HttpSession session=request.getSession();
-            	LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
-                String username="majed";
-                if (lg.getlogedin()){
-                    username=lg.getUsername();
-                }                
-            	m2.insertComment(args[2], comment, username);
-            	response.sendRedirect("/Instagrim/ImageEditMode/"+login2+"/"+args[2]);
+            	InputComment(request,response,args);
             	break;
             case 8:
-            	System.out.println("LIKE"+args[2]);
-            	MultimediaModel m4=new MultimediaModel();
-            	m4.setCluster(cluster);
-            	String login3=request.getParameter("log");
-            	HttpSession session2=request.getSession();
-            	LoggedIn lg2= (LoggedIn)session2.getAttribute("LoggedIn");
-                String username2="majed";
-                if (lg2.getlogedin()){
-                    username2=lg2.getUsername();
-                }    
-                System.out.println();
-                m4.insertLikes(username2,args[2]);
-                response.sendRedirect("/Instagrim/ImageEditMode/"+login3+"/"+args[2]);
-            	//rd4.forward(request, response);           	
+            	InputLike(request,response,args);
             	break;
             default:
-                error("Bad Operator", response);
+                error("Page Doesnt exist", response);
         }
     }
-
+//All method for editing image page
+    private void ImageEditMode(HttpServletRequest request, HttpServletResponse response, String[] args) throws ServletException, IOException
+    {
+    	MultimediaModel m=new MultimediaModel();
+    	m.setCluster(cluster);
+    	java.util.LinkedList<Comment> lsComment = m.getComentsForPic(args[3]); 
+    	int count=m.countLikes(args[3]);
+    	String count2=Integer.toString(count);
+        RequestDispatcher rd = request.getRequestDispatcher("/ImageMaintainance.jsp");
+        request.setAttribute("uuid", args[3]);
+        request.setAttribute("login", args[2]);
+        request.setAttribute("Comment", lsComment);
+        request.setAttribute("like", count2);
+        rd.forward(request, response); 
+    
+    }
+    private void deletePic(HttpServletRequest request, HttpServletResponse response, String[] args) throws ServletException, IOException
+    {
+    	MultimediaModel m=new MultimediaModel();
+    	m.setCluster(cluster);
+    	deletePic(args[2]);
+    	m.deleteComment(args[2]);
+    	m.deleteLikes(args[2]);
+    	String login=request.getParameter("login");
+    	RequestDispatcher rd = request.getRequestDispatcher("/Images/"+login);
+        rd.forward(request, response);
+    }
+    private void ImageUpload(HttpServletRequest request, HttpServletResponse response, String[] args) throws IOException, ServletException{
+    	String effect=request.getParameter("radio1");
+    	String login=request.getParameter("login");
+    	String test=request.getParameter("test");
+    	int dark=Integer.parseInt(test);
+    	updatePic(args[2],response,effect,dark);
+    	RequestDispatcher rd = request.getRequestDispatcher("/Images/"+login);
+        rd.forward(request, response);
+    }
+    private void InputComment(HttpServletRequest request, HttpServletResponse response, String[] args) throws IOException{
+    	MultimediaModel m=new MultimediaModel();
+    	m.setCluster(cluster);
+    	String comment=request.getParameter("comment");
+    	String login=request.getParameter("log");
+    	HttpSession session=request.getSession();
+    	LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+        String username="majed";
+        if (lg.getlogedin()){
+            username=lg.getUsername();
+        }                
+    	m.insertComment(args[2], comment, username);
+    	response.sendRedirect("/Instagrim/ImageEditMode/"+login+"/"+args[2]);
+    }
+    private void InputLike(HttpServletRequest request, HttpServletResponse response, String[] args) throws IOException{
+    	MultimediaModel m=new MultimediaModel();
+    	m.setCluster(cluster);
+    	String login=request.getParameter("log");
+    	HttpSession session2=request.getSession();
+    	LoggedIn lg= (LoggedIn)session2.getAttribute("LoggedIn");
+        String username2="majed";
+        if (lg.getlogedin()){
+            username2=lg.getUsername();
+        }    
+        m.insertLikes(username2,args[2]);
+        response.sendRedirect("/Instagrim/ImageEditMode/"+login+"/"+args[2]);
+    }
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	PicModel tm = new PicModel();
         tm.setCluster(cluster);
@@ -195,8 +209,9 @@ public class Image extends HttpServlet {
         rd.forward(request, response);
 
     }
-
     private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
+
+    	
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
@@ -216,7 +231,9 @@ public class Image extends HttpServlet {
         }
         out.close();
     }
-
+    
+    
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getParts()!=null){
     	for (Part part : request.getParts()) {
@@ -260,6 +277,15 @@ public class Image extends HttpServlet {
     	pm.getPicForModification(java.util.UUID.fromString(picid),effect,dark);
     	
     }
+    @Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	String args[] = Convertors.SplitRequestPath(request);
+    	MultimediaModel m=new MultimediaModel();
+    	m.setCluster(cluster);
+    	deletePic(args[2]);
+    	m.deleteComment(args[2]);
+    	m.deleteLikes(args[2]);
+	}
 
     private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
 

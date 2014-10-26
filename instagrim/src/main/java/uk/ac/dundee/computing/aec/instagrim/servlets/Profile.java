@@ -18,6 +18,7 @@ import com.datastax.driver.core.Cluster;
 
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.models.MultimediaModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
@@ -58,18 +59,32 @@ public class Profile extends HttpServlet {
 		String args[] = Convertors.SplitRequestPath(request);
 		
 		if(args[2].equals("Settings")){
-			changeProfile(request,response); System.out.println("!!!!");}
+			changeProfile(request,response); }
 		else{ 	
 			try {
+				
+				
 			 DisplayProfile(args[2], request, response);
 	        } catch (Exception et) {
-	        	
+	        	System.out.println("error");
 	        }}
 	}
 
-	
-	protected void doDelere(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("DELETE");
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String args[] = Convertors.SplitRequestPath(request);
+		PicModel pm = new PicModel();
+		pm.setCluster(cluster);
+		pm.deleteAllPic(args[2]);
+		MultimediaModel mm=new MultimediaModel();
+		mm.setCluster(cluster);
+		User um = new User();
+		um.setCluster(cluster);
+		um.deleteUser(args[2]);
+		
+		
+		
 	}
 
 	
@@ -107,7 +122,7 @@ public class Profile extends HttpServlet {
 	{	String type = "avatar";
 		
 	 	if(request.getParts()!=null){
-		for (Part part : request.getParts()) {System.out.println(part.getName()+" PARTS2 ");
+		for (Part part : request.getParts()) {
 	            String filename = part.getName();
 	            
 	            InputStream is = request.getPart(part.getName()).getInputStream();
@@ -162,7 +177,6 @@ public class Profile extends HttpServlet {
 	     String surname=request.getParameter("surname");
 	     String login=request.getParameter("login");
 	     String email=request.getParameter("email");
-	     System.out.println(name+surname+login+email);
 	     RequestDispatcher rd=request.getRequestDispatcher("/ChangeProfileInfo.jsp");
 	     request.setAttribute("firstname", name);
 	     request.setAttribute("lastname", surname);

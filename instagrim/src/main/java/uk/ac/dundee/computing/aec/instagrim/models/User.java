@@ -141,7 +141,6 @@ public class User {
            rs = session.execute( boundStatement.bind(username));
           
            for (Row row : rs) {
-        	  System.out.println("row"+row);
         	    name = row.getString("first_name");
                 surname = row.getString("last_name");
                 Set<String>emailset = row.getSet("email", String.class);
@@ -238,7 +237,7 @@ public class User {
     	 Session session = cluster.connect("instagrim");
     	    PreparedStatement psInsertPic = session.prepare("delete from userprofiles where login=?");
     	     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
-    	    session.execute(bsInsertPic.bind(java.util.UUID.fromString(login)));
+    	    session.execute(bsInsertPic.bind(login));
      }
      
     	}

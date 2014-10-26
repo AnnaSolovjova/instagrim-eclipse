@@ -18,8 +18,7 @@
     </head>
     <body>
             
-            <%String status = (String) request.getAttribute("status");;
-            System.out.println(status);%>
+          
         <header>
         <h1>InstaGrim ! </h1>
         <h2>Your world in Black and White</h2>
@@ -39,7 +38,7 @@
          <form method="POST"  action="Register">
        <font color="red">  <p id="notification"></p></font>
             <div id="Rform">
-           <%if (status=="1"){ %><p>Couldn't register the user.</p> <%} %>
+
                 <div id="tags"><ul>
                     <li>User Name </li>
                     <li>Password </li>

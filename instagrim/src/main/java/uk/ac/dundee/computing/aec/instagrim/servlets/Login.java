@@ -64,7 +64,6 @@ public class Login extends HttpServlet {
         us.setCluster(cluster);
         boolean isValid=us.IsValidUser(username, password,"login");
         HttpSession session=request.getSession();
-        System.out.println("Session in servlet "+session);
         
         if (isValid){
             LoggedIn lg= new LoggedIn();
@@ -72,7 +71,6 @@ public class Login extends HttpServlet {
             lg.setUsername(username);
             request.setAttribute("LoggedIn", lg);
             session.setAttribute("LoggedIn", lg);
-            System.out.println("Session in servlet "+session);
             RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
             rd.forward(request,response);
         
@@ -93,12 +91,12 @@ public class Login extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
     
     
 public void dropTable(){
 	 Session session = cluster.connect("instagrim");
-	  PreparedStatement ps,ps2,ps3,ps4,ps5,ps6,ps7,ps8,ps9;
+	  PreparedStatement ps,ps2,ps3,ps4,ps5,ps6,ps7;
 	  ps = session.prepare("DROP TABLE Pics");
 	  ps2 =session.prepare("DROP TABLE userpiclist");
 	  ps3 =session.prepare("DROP TABLE address");

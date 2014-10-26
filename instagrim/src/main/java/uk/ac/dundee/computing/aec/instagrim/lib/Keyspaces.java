@@ -75,7 +75,7 @@ public final class Keyspaces {
                         statement);
                 ResultSet rs = session
                         .execute(boundStatement);
-                System.out.println("created instagrim ");
+               
             } catch (Exception et) {
                 System.out.println("Can't create instagrim " + et);
             }

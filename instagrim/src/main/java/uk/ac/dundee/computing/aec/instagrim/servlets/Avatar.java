@@ -53,13 +53,9 @@ public class Avatar extends HttpServlet {
     private void DisplayAvatar(HttpServletResponse response,String User) throws ServletException, IOException {
     	PicModel tm = new PicModel();
         tm.setCluster(cluster);
-  
         Pic p = tm.getAvatar(User);
-        System.out.println("Length = " + p.getLength());
         OutputStream out = response.getOutputStream();
         response.setContentType("image/png");
-        //response.setContentLength(p.getLength());
-        //out.write(Image);
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
         byte[] buffer = new byte[8192];
@@ -78,33 +74,6 @@ public class Avatar extends HttpServlet {
         
     }
     
-    /*protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String args[] = Convertors.SplitRequestPath(request);
-        User usr = new User();
-        for (Part part : request.getParts()) {
-            System.out.println("Part Name " + part.getName());
-
-            String type = part.getContentType();
-            String filename = part.getSubmittedFileName();
-            
-            InputStream is = request.getPart(part.getName()).getInputStream();
-            int i = is.available();
-            
-            
-            if (i > 0) {
-                byte[] b = new byte[i + 1];
-                is.read(b);
-                System.out.println("Length : " + b.length);
-                PicModel tm = new PicModel();
-                tm.setCluster(cluster);
-                tm.insertAvatar(b, type, filename, args[2]);
-
-                is.close();
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
-             rd.forward(request, response);
-        }
-
-    }*/
+  
 
 }

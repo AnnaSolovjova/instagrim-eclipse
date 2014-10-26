@@ -25,8 +25,7 @@ public class MultimediaModel {
 	 public java.util.LinkedList<Comment> getComentsForPic(String picid) {
 	        java.util.LinkedList<Comment> CommentList = new java.util.LinkedList<>();
 	        Session session = cluster.connect("instagrim");
-	        
-	        System.out.println("PICID" + picid);
+
 	        PreparedStatement ps = session.prepare("select text,user from comments2 where picid =?  ALLOW FILTERING");
 	        ResultSet rs = null;
 	        BoundStatement boundStatement = new BoundStatement(ps);
@@ -36,6 +35,7 @@ public class MultimediaModel {
 	            return null;
 	        } else {
 	            for (Row row : rs) {
+	            	
 	                Comment c = new Comment();
 	                String user = row.getString("user");
 	                String comment = row.getString("text");
@@ -90,7 +90,6 @@ public int countLikes(String picid)
      } else {
          for (Row row : rs) {
            count++;
-           System.out.println("COUNT2"+count);
          } 
       return count;   
      }

@@ -33,22 +33,30 @@
 <div id="comment"><form action="/Instagrim/Like/<%=uuid%>" method="Get"> 
 <input type="text" id="like" name="like" value=<%=likes%> disabled>
 <input type="hidden" id="log" name="log" value=<%=pageUserName%>> <input type="submit" value="Like"> </form></div>
- 
+
  <%
          java.util.LinkedList<Comment> lsComment = (java.util.LinkedList<Comment>) request.getAttribute("Comment");
           if (lsComment == null) {
         %>
         <p>No Comments found!</p>
         <%
-        } else {
-            Iterator<Comment> iterator;
+        } else {%>
+         <table border="1" style="width:50%">
+  <tr>
+    <th>Comment</th>
+    <th>User</th>		
+  </tr>
+ 
+        <%    Iterator<Comment> iterator;
             iterator = lsComment.iterator();
             while (iterator.hasNext()) {
                  Comment c=(Comment)iterator.next();
-                 String com=c.getComment();%>
-				<p ><%=com%></p><%}}%>
+                   String com=c.getComment();%>
+                  <tr><td><p><%=com%></p></td>
+               <%   String us=c.getUser();%>
+				 <td><p><%=us%></p></td></tr><%}}%>
 
-
+</table>
 </div>
 </br>
 <%if(UserName.equals(pageUserName)) {%>
@@ -66,13 +74,13 @@
  <script >
              function myFunction() {
 				 var wind=document.getElementById('window').value;
-				 if(wind>0)wind=wind-1;alert(wind);
+				 if(wind>0)wind=wind-1;
 				 document.getElementById('window').value=wind
 				 document.getElementById('test').value=wind;
             	 }
             	function myFunction1() {
 		 		var wind=document.getElementById('window').value;
-		 		if(wind<10)wind=(wind*1+1);alert(wind);
+		 		if(wind<10)wind=(wind*1+1);
 				document.getElementById('window').value=wind ;
 				document.getElementById('test').value=wind
 }
@@ -91,7 +99,37 @@
 <
 
 <form action="/Instagrim/ImageDel/<%=uuid%>" method="Get">
-<input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>> <input type="submit" value="Delete"> </form>
+<input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>> 
+<input type="hidden" id="thisField2" name="uuid" value=<%=pageUserName%>> 
+<input type="submit" value="Delete" onclick="deleteUser()"> </form>
 <%} %>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                <script>
+
+                function deleteUser (user) {
+				var user_del=document.getElementById('user').value;alert(user_del);
+				var uuid=document.getElementById('uuid').value;
+				  var user = this.name;
+			            if (confirm('Are you sure you want to Delete Picture '+uuid+'?')) {
+                    jQuery.ajax({
+                        type: "DELETE",
+                       // method:"DELETE",
+                        url: "http://localhost:8080/Instagrim/Image/"+uuid+"/"+user_del,
+                        //dataType: "json",
+                        //contentType: "application/json; charset=utf-8",
+                        //dataType: {"user":user_del},
+                        success: function (data, status, jqXHR) {
+                             $(location).attr('href',"/Instagrim/Image/"+user_del);
+                        },
+                    
+                        error: function (jqXHR, status,errorThrown) {            
+                           
+                            alert(errorThrown);
+                        
+                        }
+
+                    });
+			      }
+               }</script>
 </body>
 </html>

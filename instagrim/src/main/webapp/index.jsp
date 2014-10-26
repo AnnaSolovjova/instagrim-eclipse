@@ -22,8 +22,6 @@
         <nav>
             <ul>
 
-               
-               
                     <%
                         
                         LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
@@ -34,29 +32,36 @@
 				
                 <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
                 <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
-                <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>" id="delete" onclick="deleteUser()" >Delete user</a></li>
+                <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>" id="delete" onclick="deleteUser()">Delete user</a></li>
                 <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
                 <input type=hidden id="user" value=<%=lg.getUsername() %>>
 					<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
                 <script>
 
-                function deleteUser () {
-
+                function deleteUser (user) {
+				var user_del=document.getElementById('user').value;alert(user_del);
+				  var user = this.name;
+			            if (confirm('Are you sure you want to Delete User '+user_del+'?')) {
                     jQuery.ajax({
                         type: "DELETE",
-                        url: "http://localhost:8080/Instagrim/Profile",
-                        data: "text",
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "text",
+                       // method:"DELETE",
+                        url: "http://localhost:8080/Instagrim/Profile/"+user_del,
+                        //dataType: "json",
+                        //contentType: "application/json; charset=utf-8",
+                        //dataType: {"user":user_del},
                         success: function (data, status, jqXHR) {
-                             alert("yay");
+                             
+                             $(location).attr('href',"/Instagrim/login.jsp");
                         },
                     
-                        error: function (jqXHR, status) {            
-                            alert("nay");// error handler
+                        error: function (jqXHR, status,errorThrown) {            
+                           
+                            alert(errorThrown);
+                        
                         }
 
                     });
+			      }
                }
 									
 								    	

@@ -48,7 +48,7 @@
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
                 Pic p = (Pic) iterator.next();
-                System.out.println(p.getSUUID());
+               
 
         %>
         <%if(pageUserName.equals("majed")){%>

@@ -66,10 +66,6 @@ public void insertPic(byte[] b, String type, String name, String user) {
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
             java.util.UUID picid = convertor.getTimeUUID();    
-            //The following is a quick and dirty way of doing this, will fill the disk quickly !
-            //Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
-            //FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
-           // output.write(b);
          
            if(type!="avatar"){
             String types[]=Convertors.SplitFiletype(type);
@@ -122,24 +118,37 @@ public void deletePic(String picid)
 
 public void deleteAllPic(String user)
 {
-	ResultSet rs,rs2 = null;
+	MultimediaModel mm=new MultimediaModel();
+	mm.setCluster(cluster);
+	//ResultSet rs,rs2 = null;
 	java.util.LinkedList<Pic> picList= getPicsForUser(user);
 	 Session session = cluster.connect("instagrim");
 	 if (picList == null) {
 	        } else {
+	        	
 	            Iterator<Pic> iterator;
 	            iterator = picList.iterator();
+	            PreparedStatement ps = session.prepare("delete from userpiclist where picid =?");
+	       	 	PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
+	            ResultSet rs1,rs2= null;
+	        
+	            BoundStatement boundStatement = new BoundStatement(ps);
+	           	BoundStatement boundStatement2 = new BoundStatement(ps2);
 	            while (iterator.hasNext()) {
+	            	System.out.println("notempty6");
 	                Pic p = (Pic) iterator.next();
-	                PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
-	                BoundStatement boundStatement2 = new BoundStatement(ps2);
-	                rs2 = session.execute( boundStatement2.bind(p.getSUUID()));   
+	       
+	                rs1 = session.execute( boundStatement.bind(java.util.UUID.fromString(p.getSUUID())));
+		            rs2 = session.execute( boundStatement2.bind(java.util.UUID.fromString(p.getSUUID())));
+	                System.out.println("OK");
+	                mm.deleteComment(p.getSUUID()); 
+	                mm.deleteLikes(p.getSUUID());
+	                System.out.println("OK2");
+
 	            } }
 	            
 	 
-     PreparedStatement ps = session.prepare("delete from userpiclist where user =?");
-     BoundStatement boundStatement = new BoundStatement(ps);
-     rs = session.execute( boundStatement.bind(user));
+   
   
   
   
@@ -429,11 +438,10 @@ public void deleteAllPic(String user)
         int length = 0;
         try {
             ResultSet rs = null;
-         
-            Statement select = QueryBuilder.select().column("image").from("instagrim", "userprofiles")
-                .where((QueryBuilder.eq("login",user)));
+            PreparedStatement ps = session.prepare("select image from userprofiles where login =?");
+            BoundStatement boundStatement = new BoundStatement(ps);
            
-            rs = session.execute(select);
+            rs = session.execute(boundStatement.bind(user));
             session.close();
 
             if (rs.isExhausted()) {
@@ -465,7 +473,7 @@ public void deleteAllPic(String user)
     	{newPic=grey(newPic);}
     	else if(effect.equals("serpia")){newPic=serpia(newPic,20);}
     	if(darkness<5){for(int i=0;i<10;i++){newPic=light(newPic,darkness);};
-    	}else if(darkness>5){newPic=dark(newPic,darkness);System.out.println("EFFECT2"+darkness);}
+    	}else if(darkness>5){newPic=dark(newPic,darkness);}
     	
     return newPic;
     }

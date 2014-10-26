@@ -38,7 +38,6 @@ public final class CassandraHosts {
             System.out.println("Creating cluster connection");
             cluster = Cluster.builder().addContactPoint(Host).build();
         }
-        System.out.println("Cluster Name " + cluster.getClusterName());
         Metadata mdata = cluster.getMetadata();
         Set<Host> hosts = mdata.getAllHosts();
         String sHosts[] = new String[hosts.size()];
@@ -57,7 +56,6 @@ public final class CassandraHosts {
     }
 
     public static Cluster getCluster() {
-        System.out.println("getCluster");
         cluster = Cluster.builder()
                 .addContactPoint(Host).build();
         getHosts(cluster);

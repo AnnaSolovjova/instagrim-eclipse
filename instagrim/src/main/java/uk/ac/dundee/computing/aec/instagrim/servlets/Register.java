@@ -17,6 +17,7 @@ import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -77,7 +78,7 @@ public class Register extends HttpServlet {
         
         if(success==true) 
         {
-        uploadAvatar(username);
+        uploadAvatar(username,request);
         RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
         rd.forward(request,response);
         }
@@ -115,17 +116,18 @@ public class Register extends HttpServlet {
     		error("The length of password is wrong(5-10) or length of login is wrong(3-10)", response);}	
     }
     
-    public void uploadAvatar(String username) throws IOException
+    public void uploadAvatar(String username,HttpServletRequest request) throws IOException
     {			
               String type = "avatar";
               String filename = "";
-            		  InputStream is = Register.class.getResourceAsStream("\\images\\images.jpg");
-              System.out.println(is+"ajajaj");
+              ServletContext  context =request.getSession().getServletContext();
+              System.out.println("Context Path: "+ context.getContextPath());
+              InputStream is = context.getResourceAsStream("/images.jpg");
+            
               int i = is.available();
               if (i > 0) {
                   byte[] b = new byte[i + 1];
                   is.read(b);
-                  System.out.println("Length : " + b.length);
                   PicModel tm = new PicModel();
                   tm.setCluster(cluster);
                   tm.insertPic(b, type, filename, username);
