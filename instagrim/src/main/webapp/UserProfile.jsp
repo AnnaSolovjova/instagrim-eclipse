@@ -25,16 +25,16 @@ String pageUserName =(String) request.getAttribute("pageUser");%>
 <p>This is <%=pageUserName %> Profile</p>
   <nav>
             <ul>
-                <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
-                <li><a href="/Instagrim/Images/<%=pageUserName%>">Images</a></li>
-                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+                <li class="nav"><a href="/Instagrim-AS/uploadPic.jsp">Upload</a></li>
+                <li><a href="/Instagrim-AS/Images/<%=pageUserName%>">Images</a></li>
+                <li class="nav"><a href="/Instagrim-AS/LogOut">Logout</a></li>
             </ul>
         </nav>
      
  
-         	<form action="/Instagrim/Profile/Settings/<%=pageUserName%>" method="Get">
+         	<form action="/Instagrim-AS/Profile/Settings/<%=pageUserName%>" method="Get">
          	<input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>>
-         	<p>Avatar</p><p><image src="/Instagrim/Avatar/<%=pageUserName%>" height=120px width=120px></p>
+         	<p>Avatar</p><p><image src="/Instagrim-AS/Avatar/<%=pageUserName%>" height=120px width=120px></p>
        		<p>Name: <%=name%> </p> <input type="hidden" id="thisField1" name="name" value=<%=name%>>
         	<p>Surname: <%=surname%></p> <input type="hidden" id="thisField2" name="surname" value=<%=surname%>>
         	<p>Email: <%=email%> </p> <input type="hidden" id="thisField3" name="email" value=<%=email%>><br/>

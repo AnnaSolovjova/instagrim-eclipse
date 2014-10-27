@@ -29,9 +29,9 @@
         
         <nav>
             <ul>
-                <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
-                <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
-                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+                <li class="nav"><a href="/Instagrim-AS/uploadPic.jsp">Upload</a></li>
+                <li class="nav"><a href="/Instagrim-AS/Images/majed">Sample Images</a></li>
+                <li class="nav"><a href="/Instagrim-AS/LogOut">Logout</a></li>
             </ul>
         </nav>
  
@@ -52,15 +52,15 @@
 
         %>
         <%if(pageUserName.equals("majed")){%>
-        <a href="/Instagrim/Profile/<%=p.getUser()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
+        <a href="/Instagrim-AS/Profile/<%=p.getUser()%>" ><img src="/Instagrim-AS/Thumb/<%=p.getSUUID()%>"></a>
         <% }
         else{%>
-       <a href="/Instagrim/ImageEditMode/<%=pageUserName%>/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
+       <a href="/Instagrim-AS/ImageEditMode/<%=pageUserName%>/<%=p.getSUUID()%>" ><img src="/Instagrim-AS/Thumb/<%=p.getSUUID()%>"></a>
        <br/><%}}}%>
         </article>
         <footer>
             <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
+                <li class="footer"><a href="/Instagrim-AS">Home</a></li>
             </ul>
         </footer>
     </body>

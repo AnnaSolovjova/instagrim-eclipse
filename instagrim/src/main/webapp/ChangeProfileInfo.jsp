@@ -25,9 +25,9 @@ String name = (String) request.getAttribute("firstname");
 <p>Changing profile for<%=UserName%><p>
   <nav>
             <ul>
-                <li class="nav"><a href="/Instagrim/uploadPic.jsp">Upload</a></li>
-                <li class="nav"><a href="/Instagrim/Images/majed">Sample Images</a></li>
-                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+                <li class="nav"><a href="/Instagrim-AS/uploadPic.jsp">Upload</a></li>
+                <li class="nav"><a href="/Instagrim-AS/Images/majed">Sample Images</a></li>
+                <li class="nav"><a href="/Instagrim-AS/LogOut">Logout</a></li>
             </ul>
         </nav>
         
@@ -38,7 +38,7 @@ String name = (String) request.getAttribute("firstname");
         %>
       
 	
-         	<form enctype="multipart/form-data" action="/Instagrim/Profile/<%=pageUserName%>" method="Post">
+         	<form enctype="multipart/form-data" action="/Instagrim-AS/Profile/<%=pageUserName%>" method="Post">
          	<input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>>
        		<p >Name: <input type="text" name="name" class="menu" value=<%=name%>> <p>
         	<p>Surname: <input type="text" name="surname" class="menu" value=<%=surname%>><p>

@@ -24,7 +24,7 @@ public class MultimediaModel {
 
 	 public java.util.LinkedList<Comment> getComentsForPic(String picid) {
 	        java.util.LinkedList<Comment> CommentList = new java.util.LinkedList<>();
-	        Session session = cluster.connect("instagrim");
+	        Session session = cluster.connect("instagrimas");
 
 	        PreparedStatement ps = session.prepare("select text,user from comments2 where picid =?  ALLOW FILTERING");
 	        ResultSet rs = null;
@@ -49,7 +49,7 @@ public class MultimediaModel {
 	 
 	 public void insertComment(String picid, String comment, String user)
 	 {
-		 Session session = cluster.connect("instagrim");
+		 Session session = cluster.connect("instagrimas");
 		 PreparedStatement psInsertPic = session.prepare("insert into comments2( picid, user, commentadded, text) values(?,?,?,?)");
          BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
          Date DateAdded = new Date();
@@ -61,7 +61,7 @@ public class MultimediaModel {
 	 
 public void deleteComment(String picid)
 {
-	Session session = cluster.connect("instagrim");
+	Session session = cluster.connect("instagrimas");
     PreparedStatement psInsertPic = session.prepare("delete from comments2 where picid=?");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
     session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)));
@@ -71,7 +71,7 @@ public void deleteComment(String picid)
 	 
 public void insertLikes(String user,String picid)
 {
-	 Session session = cluster.connect("instagrim");
+	 Session session = cluster.connect("instagrimas");
 	 PreparedStatement psInsertPic = session.prepare("insert into likes( picid, user ) values(?,?)");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
      Date DateAdded = new Date();
@@ -80,7 +80,7 @@ public void insertLikes(String user,String picid)
 
 public int countLikes(String picid)
 {
-	 Session session = cluster.connect("instagrim");
+	 Session session = cluster.connect("instagrimas");
 	 PreparedStatement psInsertPic = session.prepare("select user from likes where picid=?");// where picid=? ALLOW FILTERING");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
      ResultSet rs= session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)) );
@@ -97,7 +97,7 @@ public int countLikes(String picid)
 }
 public void deleteLikes(String picid)
 {
-	Session session = cluster.connect("instagrim");
+	Session session = cluster.connect("instagrimas");
     PreparedStatement psInsertPic = session.prepare("delete from likes where picid=?");
      BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
     session.execute(bsInsertPic.bind(java.util.UUID.fromString(picid)));

@@ -180,7 +180,7 @@ public class Image extends HttpServlet {
             username=lg.getUsername();
         }                
     	m.insertComment(args[2], comment, username);
-    	response.sendRedirect("/Instagrim/ImageEditMode/"+login+"/"+args[2]);
+    	response.sendRedirect("/Instagrim-AS/ImageEditMode/"+login+"/"+args[2]);
     }
     private void InputLike(HttpServletRequest request, HttpServletResponse response, String[] args) throws IOException{
     	MultimediaModel m=new MultimediaModel();
@@ -193,7 +193,7 @@ public class Image extends HttpServlet {
             username2=lg.getUsername();
         }    
         m.insertLikes(username2,args[2]);
-        response.sendRedirect("/Instagrim/ImageEditMode/"+login+"/"+args[2]);
+        response.sendRedirect("/Instagrim-AS/ImageEditMode/"+login+"/"+args[2]);
     }
     private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	PicModel tm = new PicModel();

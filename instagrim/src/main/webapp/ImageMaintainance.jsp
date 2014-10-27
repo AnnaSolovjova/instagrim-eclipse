@@ -11,7 +11,7 @@
 
     </head>
 <body>
-<li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+<li class="nav"><a href="/Instagrim-AS/LogOut">Logout</a></li>
 <%String uuid=(String)request.getAttribute("uuid"); %>
 <%String pageUserName=(String)request.getAttribute("login"); %>
 <%String likes=(String)request.getAttribute("like"); %>
@@ -20,17 +20,17 @@
 		if (lg != null) {
  		UserName = lg.getUsername();} %>
 <div id="photoMode">
-<div id="image"><img src="/Instagrim/Thumb/<%=uuid%>"></div>
+<div id="image"><img src="/Instagrim-AS/Thumb/<%=uuid%>"></div>
 
 
 <%//Comment section on the page %>
-<div id="comment"><form action="/Instagrim/InputComment/<%=uuid%>" method="Get"> 
+<div id="comment"><form action="/Instagrim-AS/InputComment/<%=uuid%>" method="Get"> 
 <input type="text" id="comm" name="comment" value="input yout text" width=200px height=100px>
 <input type="hidden" id="log" name="log" value=<%=pageUserName%>> <input type="submit" value="Comment"> </form></div>
  
  
 <%//Like section on the page %>
-<div id="comment"><form action="/Instagrim/Like/<%=uuid%>" method="Get"> 
+<div id="comment"><form action="/Instagrim-AS/Like/<%=uuid%>" method="Get"> 
 <input type="text" id="like" name="like" value=<%=likes%> disabled>
 <input type="hidden" id="log" name="log" value=<%=pageUserName%>> <input type="submit" value="Like"> </form></div>
 
@@ -63,7 +63,7 @@
 
 
 
-<form action="/Instagrim/ImageUp/<%=uuid%>" method="Get">
+<form action="/Instagrim-AS/ImageUp/<%=uuid%>" method="Get">
 <input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>>
  
  <p>Adjust brightness(5 is current)</p></br>
@@ -98,7 +98,7 @@
 
 <
 
-<form action="/Instagrim/ImageDel/<%=uuid%>" method="Get">
+<form action="/Instagrim-AS/ImageDel/<%=uuid%>" method="Get">
 <input type="hidden" id="thisField1" name="login" value=<%=pageUserName%>> 
 <input type="hidden" id="thisField2" name="uuid" value=<%=pageUserName%>> 
 <input type="submit" value="Delete" onclick="deleteUser()"> </form>
@@ -114,12 +114,12 @@
                     jQuery.ajax({
                         type: "DELETE",
                        // method:"DELETE",
-                        url: "http://localhost:8080/Instagrim/Image/"+uuid+"/"+user_del,
+                        url: "/Instagrim-AS/Image/"+uuid+"/"+user_del,
                         //dataType: "json",
                         //contentType: "application/json; charset=utf-8",
                         //dataType: {"user":user_del},
                         success: function (data, status, jqXHR) {
-                             $(location).attr('href',"/Instagrim/Image/"+user_del);
+                             $(location).attr('href',"/Instagrim-AS/Image/"+user_del);
                         },
                     
                         error: function (jqXHR, status,errorThrown) {            

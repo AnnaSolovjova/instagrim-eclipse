@@ -30,10 +30,10 @@
                             if (lg.getlogedin()) {
                     %>
 				
-                <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
-                <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
-                <li><a href="/Instagrim/Profile/<%=lg.getUsername()%>" id="delete" onclick="deleteUser()">Delete user</a></li>
-                <li class="nav"><a href="/Instagrim/LogOut">Logout</a></li>
+                <li><a href="/Instagrim-AS/Images/<%=lg.getUsername()%>">Your Images</a></li>
+                <li><a href="/Instagrim-AS/Profile/<%=lg.getUsername()%>">Your Profile</a></li>
+                <li><a href="/Instagrim-AS/Profile/<%=lg.getUsername()%>" id="delete" onclick="deleteUser()">Delete user</a></li>
+                <li class="nav"><a href="/Instagrim-AS/LogOut">Logout</a></li>
                 <input type=hidden id="user" value=<%=lg.getUsername() %>>
 					<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
                 <script>
@@ -45,13 +45,13 @@
                     jQuery.ajax({
                         type: "DELETE",
                        // method:"DELETE",
-                        url: "http://localhost:8080/Instagrim/Profile/"+user_del,
+                        url: "http://localhost:8080/Instagrim-AS/Profile/"+user_del,
                         //dataType: "json",
                         //contentType: "application/json; charset=utf-8",
                         //dataType: {"user":user_del},
                         success: function (data, status, jqXHR) {
                              
-                             $(location).attr('href',"/Instagrim/login.jsp");
+                             $(location).attr('href',"/Instagrim-AS/login.jsp");
                         },
                     
                         error: function (jqXHR, status,errorThrown) {            
@@ -81,7 +81,7 @@
         </nav>
         <footer>
             <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
+                <li class="footer"><a href="/Instagrim-AS">Home</a></li>
                 <li>&COPY; Andy C</li>
             </ul>
         </footer>

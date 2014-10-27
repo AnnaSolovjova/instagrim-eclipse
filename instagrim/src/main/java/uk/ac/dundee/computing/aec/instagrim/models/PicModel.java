@@ -75,7 +75,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
             byte[] processedb = picdecolour(b,types[1]);
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
-            Session session = cluster.connect("instagrim");
+            Session session = cluster.connect("instagrimas");
            
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
@@ -89,7 +89,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
            
            }else{
         	
-        	   Session session = cluster.connect("instagrim");
+        	   Session session = cluster.connect("instagrimas");
         	   PreparedStatement psInsertAvatar = session.prepare("UPDATE userprofiles SET picId = ?, image =? WHERE login = ?");
         	   BoundStatement bsInsertAvatar = new BoundStatement(psInsertAvatar);
         	   session.execute(bsInsertAvatar.bind(picid,buffer,user));
@@ -104,7 +104,7 @@ public void insertPic(byte[] b, String type, String name, String user) {
 public void deletePic(String picid)
 {
 	
-	 Session session = cluster.connect("instagrim");
+	 Session session = cluster.connect("instagrimas");
      PreparedStatement ps = session.prepare("delete from userpiclist where picid =?");
 	 PreparedStatement ps2 = session.prepare("delete from Pics where picid =?");
      ResultSet rs,rs2 = null;
@@ -122,7 +122,7 @@ public void deleteAllPic(String user)
 	mm.setCluster(cluster);
 	//ResultSet rs,rs2 = null;
 	java.util.LinkedList<Pic> picList= getPicsForUser(user);
-	 Session session = cluster.connect("instagrim");
+	 Session session = cluster.connect("instagrimas");
 	 if (picList == null) {
 	        } else {
 	        	
@@ -284,7 +284,7 @@ public void deleteAllPic(String user)
    //getting pictures
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
-        Session session = cluster.connect("instagrim");
+        Session session = cluster.connect("instagrimas");
         PreparedStatement ps = session.prepare("select picid from userpiclist where user =?  ALLOW FILTERING");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
@@ -308,7 +308,7 @@ public void deleteAllPic(String user)
 
     
    public Pic getPic(int image_type, java.util.UUID picid) {
-        Session session = cluster.connect("instagrim");
+        Session session = cluster.connect("instagrimas");
         ByteBuffer bImage = null;
         String type = null;
         int length = 0;
@@ -369,7 +369,7 @@ public void deleteAllPic(String user)
     
    public void getPicForModification(java.util.UUID picid,String effect,int darknes) throws IOException
    {
-	   Session session = cluster.connect("instagrim");
+	   Session session = cluster.connect("instagrimas");
 	   byte[] retreived=null;
        ByteBuffer bImage = null;
        String type = null;int length = 0;
@@ -432,7 +432,7 @@ public void deleteAllPic(String user)
     //Methods for managing profileImage
     public Pic getAvatar(String user){
 
-        Session session = cluster.connect("instagrim");
+        Session session = cluster.connect("instagrimas");
         ByteBuffer bImage = null;
         String type = null;
         int length = 0;
@@ -484,7 +484,7 @@ public void deleteAllPic(String user)
 public java.util.LinkedList<Pic> getRandom()
 {
 	  java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
-      Session session = cluster.connect("instagrim");
+      Session session = cluster.connect("instagrimas");
       PreparedStatement ps = session.prepare("select * from userpiclist ");
       ResultSet rs = null;
       BoundStatement boundStatement = new BoundStatement(ps);

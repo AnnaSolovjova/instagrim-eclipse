@@ -27,8 +27,8 @@
         <nav>
             <ul>
                 
-                <li><a href="/Instagrim/Images/majed">Sample Images</a></li>
-                <li ><a href="/Instagrim">Home</a></li>
+                <li><a href="/Instagrim-AS/Images/majed">Sample Images</a></li>
+                <li ><a href="/Instagrim-AS">Home</a></li>
             </ul>
         </nav>
        

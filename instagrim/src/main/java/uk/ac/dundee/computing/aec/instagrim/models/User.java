@@ -69,7 +69,7 @@ public class User {
        email.add(Email);
        //Taken from http://planetcassandra.org/blog/introducing-datastax-java-driver-2-1/
        // the type from the cluster metadata:
-       UserType addressType = cluster.getMetadata().getKeyspace("instagrim").getUserType("address");
+       UserType addressType = cluster.getMetadata().getKeyspace("instagrimas").getUserType("address");
        UDTValue address = addressType.newValue()
                                       .setString("street", street)
                                       .setString("city", city)
@@ -78,7 +78,7 @@ public class User {
        //after can be added other addresses that user needs-probably not for this app 
        addresses.put("User address", address);
        
-        Session session = cluster.connect("instagrim");
+        Session session = cluster.connect("instagrimas");
         PreparedStatement ps = session.prepare("insert into userprofiles (login,password,first_name,last_name,email,addresses) Values(?,?,?,?,?,?)");
         BoundStatement boundStatement = new BoundStatement(ps);
         
@@ -105,7 +105,7 @@ public class User {
             System.out.println("Can't check your password");
             return false;
         }
-        Session session = cluster.connect("instagrim");
+        Session session = cluster.connect("instagrimas");
         PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
@@ -132,7 +132,7 @@ public class User {
        
      public void getInfo(String username) {
     
-    	   Session session = cluster.connect("instagrim");
+    	   Session session = cluster.connect("instagrimas");
     	   
     	   PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
     	   
@@ -166,7 +166,7 @@ public class User {
     
      
      public void updateProfile(String Name, String Surname,String UserName,String Email) {
-    	 Session session = cluster.connect("instagrim");
+    	 Session session = cluster.connect("instagrimas");
      	  PreparedStatement ps;
             
       	 if(Name!=null)
@@ -200,7 +200,7 @@ public class User {
      
      public void UpdateProfile(String UserName,byte[] avatarPic)
      {
-    	 Session session = cluster.connect("instagrim");
+    	 Session session = cluster.connect("instagrimas");
      	 PreparedStatement ps;
  
     		if(avatarPic!=null)
@@ -221,7 +221,7 @@ public class User {
      public boolean userExists(String user)
      {
     	 
-    	 Session session = cluster.connect("instagrim");
+    	 Session session = cluster.connect("instagrimas");
          PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
          ResultSet rs = null;
          BoundStatement boundStatement = new BoundStatement(ps);
@@ -234,7 +234,7 @@ public class User {
      }
      public void deleteUser(String login)
      {
-    	 Session session = cluster.connect("instagrim");
+    	 Session session = cluster.connect("instagrimas");
     	    PreparedStatement psInsertPic = session.prepare("delete from userprofiles where login=?");
     	     BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
     	    session.execute(bsInsertPic.bind(login));
